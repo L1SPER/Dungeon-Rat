@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    private static GameManager Instance;
+    public static GameManager Instance;
 
     private void Awake()
     {
-        if(Instance== null&& Instance!= this)
+        if(Instance!= null&& Instance!= this)
         {
             Destroy(gameObject);
             return;
@@ -15,5 +15,4 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
-
 }
