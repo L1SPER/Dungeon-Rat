@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 896deacea13c49e4f83967c4b02625ff
+guid: 2bb2961109eaf634aa668a97f4033c6f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4553470842178873599
-    second: Blacksmith Inside_0
+      213: 376877520144519422
+    second: ChatGPT Image 12 Mar 2026 09_35_40_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -139,7 +139,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Blacksmith Inside_0
+      name: ChatGPT Image 12 Mar 2026 09_35_40_0
       rect:
         serializedVersion: 2
         x: 0
@@ -154,8 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ff8ab2b0b9d213f30800000000000000
-      internalID: 4553470842178873599
+      spriteID: ef05b089b10fa3500800000000000000
+      internalID: 376877520144519422
       vertices: []
       indices: 
       edges: []
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Blacksmith Inside_0: 4553470842178873599
+      ChatGPT Image 12 Mar 2026 09_35_40_0: 376877520144519422
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
