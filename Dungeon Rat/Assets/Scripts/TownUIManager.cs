@@ -12,6 +12,7 @@ public class TownUIManager : MonoBehaviour
     {
         CloseAllPanels();
     }
+
     public void OpenPanel(int index)
     {
         CloseAllPanels();
@@ -19,12 +20,14 @@ public class TownUIManager : MonoBehaviour
         townUICanvas.SetActive(true);
         buildings[index].SetActive(true);
     }
+
     public void ClosePanel(int index)
     {
         buildings[index].SetActive(false);
         townUICanvas.SetActive(false);
         townCanvas.SetActive(true);
     }
+
     public void CloseAllPanels()
     {
         foreach (GameObject building in buildings)
@@ -34,10 +37,12 @@ public class TownUIManager : MonoBehaviour
         townUICanvas.SetActive(false);
         townCanvas.SetActive(true);
     }
+
     public void GoToEntrance()
     {
         GameSceneManager.Instance.LoadScene("Dungeon Entrance");
     }
+
     public void GoToMainMenu()
     {
         GameSceneManager.Instance.LoadScene("Main Menu");

@@ -6,12 +6,15 @@ public class MainMenuUI : MonoBehaviour
     {
         GameSceneManager.Instance.LoadScene("Town");
     }
+
     public void OpenSettingsPanel()
     {
     }
+
     public void CloseSettingsPanel()
     {
     }
+
     public void QuitGame()
     {
         Application.Quit();
