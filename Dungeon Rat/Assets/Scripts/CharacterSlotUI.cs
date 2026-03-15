@@ -1,15 +1,23 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CharacterSlotUI : MonoBehaviour
+public class CharacterSlotUI : MonoBehaviour,IPointerClickHandler
 {
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text classText;
     [SerializeField] private TMP_Text weaponNameText;
     [SerializeField] private TMP_Text weaponClassNameText;
     [SerializeField] private TMP_Text weaponDamageText;
+    [SerializeField] private TMP_Text slotIndexText;
     [SerializeField] private Image characterImage;
+
+    [Header("Slot Visual")]
+    [SerializeField] private Image backgroundImage;
+    [SerializeField] private Color normalColor;
+    [SerializeField] private Color selectedColor;
 
     [Header("Class Images")]
     [SerializeField] private Sprite warriorSprite;
@@ -17,6 +25,25 @@ public class CharacterSlotUI : MonoBehaviour
     [SerializeField] private Sprite mageSprite;
     [SerializeField] private Sprite emptySlotSprite;
 
+    private int slotIndex;
+    private PartyPreviewUI partyPreviewUI;
+
+    public void Setup(int index, PartyPreviewUI ui)
+    {
+        slotIndex = index;
+        partyPreviewUI = ui;
+        SetSelected(false);
+    }
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        //SetSelected(true);
+        partyPreviewUI.SelectSlot(slotIndex);
+    }
+    public void SetSelected(bool isSelected)
+    {
+        if (backgroundImage!=null)
+            backgroundImage.color = isSelected ? selectedColor : normalColor;
+    }
     public void SetCharacter(Character character)
     {
         if (character == null)
@@ -41,6 +68,9 @@ public class CharacterSlotUI : MonoBehaviour
             weaponDamageText.text = "-";
         }
 
+        //KARAKTERIN CANI AYARLANCAK !!!
+        slotIndexText.text = slotIndex.ToString();
+        character.position = slotIndex;
         characterImage.sprite = GetClassSprite(character.classType);
     }
 
@@ -51,6 +81,8 @@ public class CharacterSlotUI : MonoBehaviour
         weaponNameText.text = "-";
         weaponClassNameText.text = "-";
         weaponDamageText.text = "-";
+        slotIndexText.text = slotIndex.ToString();
+        //KARAKTERIN CANI AYARLANCAK !!!
 
         characterImage.sprite = emptySlotSprite;
     }

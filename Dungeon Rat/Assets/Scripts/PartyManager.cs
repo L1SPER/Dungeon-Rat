@@ -77,7 +77,7 @@ public class PartyManager : MonoBehaviour
         return count;
     }
 
-    public Character GetCharacter(int position)
+    public Character GetCharacterBySlotIndex(int position)
     {
         int index = position - 1;
 
@@ -124,7 +124,31 @@ public class PartyManager : MonoBehaviour
         }
         return true;
     }
-
+    public void SwapCharacter(Character character1, Character character2)
+    {
+        Character temp = character1;
+        character1 = character2;
+        character2 = temp;
+    }
+    public void SwapCharactersByPosition(int pos1, int pos2)
+    {
+        if (pos1 < 1 || pos1 > partySlots.Length || pos2 < 1 || pos2 > partySlots.Length)
+        {
+            Debug.LogWarning("Invalid positions for swapping.");
+            return;
+        }
+        int index1 = pos1 - 1;
+        int index2 = pos2 - 1;
+        Character temp = partySlots[index1];
+        partySlots[index1] = partySlots[index2];
+        partySlots[index2] = temp;
+        // Update character positions
+        if (partySlots[index1] != null)
+            partySlots[index1].position = index1 + 1;
+        if (partySlots[index2] != null)
+            partySlots[index2].position = index2 + 1;
+        Debug.Log($"Swapped characters in positions {pos1} and {pos2}.");
+    }
     public Character[] GetPartyMembers()
     {
         return partySlots;
