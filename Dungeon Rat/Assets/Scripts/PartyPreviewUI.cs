@@ -23,10 +23,7 @@ public class PartyPreviewUI : MonoBehaviour
          SetupSlots();
          RefreshSlots();
     }
-    private void Update()
-    {
-        Debug.LogWarning("selectedSlotIndex is : "+ selectedSlotIndex);
-    }
+
     private void SetupSlots()
     {
         for (int i = 0; i < slotsUI.Length; i++)
