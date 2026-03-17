@@ -54,18 +54,18 @@ public class CharacterSlotUI : MonoBehaviour,IPointerClickHandler
         nameText.text = character.name;
         classText.text = character.classType.ToString();
 
-        if (character.weapon != null)
-        {
-            weaponNameText.text = character.weapon.weaponName;
-            weaponClassNameText.text = character.weapon.weaponType.ToString();
-            weaponDamageText.text = character.weapon.minDamage + " - " + character.weapon.maxDamage;
-        }
-        else
-        {
-            weaponNameText.text = "No Weapon";
-            weaponClassNameText.text = "N/A";
-            weaponDamageText.text = "-";
-        }
+        //if (character.weapon != null)
+        //{
+        //    weaponNameText.text = character.weapon.weaponName;
+        //    weaponClassNameText.text = character.weapon.weaponType.ToString();
+        //    weaponDamageText.text = character.weapon.minDamage + " - " + character.weapon.maxDamage;
+        //}
+        //else
+        //{
+        //    weaponNameText.text = "No Weapon";
+        //    weaponClassNameText.text = "N/A";
+        //    weaponDamageText.text = "-";
+        //}
 
         //KARAKTERIN CANI AYARLANCAK !!!
         slotIndexText.text = slotIndex.ToString();

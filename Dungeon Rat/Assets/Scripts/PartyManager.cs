@@ -16,20 +16,20 @@ public class PartyManager : MonoBehaviour
 
         Character warrior = new Character(
             "Borin",
-            ClassType.Warrior,
-            new Weapon("Basic Sword", WeaponType.Sword, 5, 15, 1)
+            ClassType.Warrior
+            //new Weapon("Basic Sword", WeaponType.Sword, 5, 15, 1)
         );
 
         Character archer = new Character(
             "Lira",
-            ClassType.Archer,
-            new Weapon("Basic Bow", WeaponType.Bow, 4, 12, 3)
+            ClassType.Archer
+            //new Weapon("Basic Bow", WeaponType.Bow, 4, 12, 3)
         );
 
         Character mage = new Character(
             "Mira",
-            ClassType.Mage,
-            new Weapon("Basic Wand", WeaponType.Wand, 2, 8, 2)
+            ClassType.Mage
+            //,new Weapon("Basic Wand", WeaponType.Wand, 2, 8, 2)
         );
 
         AddCharacter(warrior);
@@ -109,7 +109,7 @@ public class PartyManager : MonoBehaviour
             if (c == null)
                 Debug.Log($"Slot {i + 1}: Empty");
             else
-                Debug.Log($"Slot {i + 1}: {c.name} | {c.classType} | {c.weapon.weaponName}");
+                Debug.Log($"Slot {i + 1}: {c.name} | {c.classType} ");
         }
     }
 
@@ -124,12 +124,14 @@ public class PartyManager : MonoBehaviour
         }
         return true;
     }
+
     public void SwapCharacter(Character character1, Character character2)
     {
         Character temp = character1;
         character1 = character2;
         character2 = temp;
     }
+
     public void SwapCharactersByPosition(int pos1, int pos2)
     {
         if (pos1 < 1 || pos1 > partySlots.Length || pos2 < 1 || pos2 > partySlots.Length)
@@ -149,6 +151,7 @@ public class PartyManager : MonoBehaviour
             partySlots[index2].position = index2 + 1;
         Debug.Log($"Swapped characters in positions {pos1} and {pos2}.");
     }
+
     public Character[] GetPartyMembers()
     {
         return partySlots;

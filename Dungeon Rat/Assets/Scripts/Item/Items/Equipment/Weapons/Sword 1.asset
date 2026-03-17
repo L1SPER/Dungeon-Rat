@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f351afbdb301d945abe15327e6fcbfe, type: 3}
+  m_Name: Sword 1
+  m_EditorClassIdentifier: Assembly-CSharp::Weapon
+  itemName: Basic Sword
+  itemID: 0
+  description: 
+  icon: {fileID: -5365385695610608141, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
+  itemType: 1
+  itemRarity: 0
+  maxStackSize: 1
+  equipmentType: 8
+  strength: 0
+  agility: 0
+  intelligence: 0
+  WeaponType: 0
+  durability: 10
+  minDamage: 5
+  maxDamage: 15
+  range: 1
+  isBroken: 0
