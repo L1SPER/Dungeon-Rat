@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Health
@@ -11,10 +12,22 @@ public class Health
     {
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;
+        this.isDead = false;
+        this.isInvulnerable=false;
     }
     public void SetMaxHealth(int _maxHealth)
     {
-        this.maxHealth = _maxHealth;
+        if(_maxHealth < 0)
+        {
+            Debug.LogWarning("Max health cannot be negative.");
+            return;
+        }
+        maxHealth = Mathf.Max(1, _maxHealth);
+
+        if(currentHealth> maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
     }
     public void SetCurrentHealth(int _currentHealth)
     {
@@ -22,6 +35,7 @@ public class Health
     }
     public void TakeDamage(int damage)
     {
+
         currentHealth -= damage;
         if (currentHealth < 0)
         {
@@ -31,7 +45,11 @@ public class Health
     }
     public void Heal(int amount)
     {
+        if(isDead || amount <= 0)
+            return;
+
         currentHealth += amount;
+
         if (currentHealth > maxHealth)
             currentHealth = maxHealth;
     }

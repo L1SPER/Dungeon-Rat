@@ -1,9 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using Unity.VisualScripting;
 public class PartyManager : MonoBehaviour
 {
     private Character[] partySlots = new Character [3];
+    [SerializeField] private EquipmentInventoryObject[] characterInventoryObject = new EquipmentInventoryObject [3];
+    [SerializeField] private EquipmentItemData [] weapons = new EquipmentItemData[3];
     private void Start()
     {
         CreateStartingParty();    
@@ -16,30 +19,81 @@ public class PartyManager : MonoBehaviour
 
         Character warrior = new Character(
             "Borin",
-            ClassType.Warrior
-            //new Weapon("Basic Sword", WeaponType.Sword, 5, 15, 1)
+            ClassType.Warrior,
+            characterInventoryObject[0]
+        //new Weapon("Basic Sword", WeaponType.Sword, 5, 15, 1)
         );
 
         Character archer = new Character(
             "Lira",
-            ClassType.Archer
+            ClassType.Archer,
+            characterInventoryObject[1]
             //new Weapon("Basic Bow", WeaponType.Bow, 4, 12, 3)
         );
 
         Character mage = new Character(
             "Mira",
-            ClassType.Mage
+            ClassType.Mage,
+            characterInventoryObject[2]
             //,new Weapon("Basic Wand", WeaponType.Wand, 2, 8, 2)
         );
 
+        
         AddCharacter(warrior);
         AddCharacter(archer);
         AddCharacter(mage);
 
+        //Karakterlere silah verilecek.
+
+        Item _item1= new Item(weapons[0],1);
+        Item _item2 = new Item(weapons[1], 1);
+        Item _item3 = new Item(weapons[2], 1);
+
+        GiveStartingWeapon(warrior, weapons[0]);
+        GiveStartingWeapon(archer, weapons[1]);
+        GiveStartingWeapon(mage, weapons[2]);
+
         Debug.Log("Starting party is created!");
         PrintParty();
     }
-    
+
+    private void GiveStartingWeapon(Character character, EquipmentItemData weapon)
+    {
+        if (character == null || weapon == null)
+        {
+            Debug.LogWarning("Character or weapon is null.");
+            return;
+        }
+
+        if (character.CharacterInventoryObject == null || character.CharacterInventoryObject.inventory == null)
+        {
+            Debug.LogWarning($"Character inventory is missing for {character.name}");
+            return;
+        }
+
+        EquipmentInventory equipmentInventory = character.CharacterInventoryObject.inventory;
+
+        equipmentInventory.ConfigureDefaultRestrictions();
+
+        int weaponSlotIndex = equipmentInventory.FindSlotIndexByEquipmentType(EquipmentType.Weapon);
+
+        if (weaponSlotIndex == -1)
+        {
+            Debug.LogWarning($"Weapon slot not found for {character.name}");
+            return;
+        }
+
+        bool success = equipmentInventory.TrySetItemToSlot(weaponSlotIndex, weapon, 1);
+
+        if (!success)
+        {
+            Debug.LogWarning($"Could not equip starting weapon to {character.name}");
+            return;
+        }
+
+        character.RecalculateStats();
+    }
+
     public bool AddCharacter(Character character)
     {
         if (character == null)

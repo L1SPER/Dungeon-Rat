@@ -1,0 +1,474 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60eaf2c6053030b40aa4cea6672af3a8, type: 3}
+  m_Name: GENERAL INVENTORY
+  m_EditorClassIdentifier: Assembly-CSharp::GeneralInventoryObject
+  id: 0
+  savePath: 
+  inventoryName: General Inventory
+  itemDatabase: {fileID: 11400000, guid: 67a8c0e206ae4994e976b30add39fef6, type: 2}
+  inventory:
+    slots:
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 0
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 1
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 2
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 3
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 4
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 5
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 6
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 7
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 8
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 9
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 10
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 11
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 12
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 13
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 14
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 15
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 16
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 17
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 18
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 19
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 20
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 21
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 22
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 23
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 24
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 25
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 26
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 27
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 28
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 29
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 30
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 31
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 32
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 33
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 34
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 35
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 36
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 37
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 38
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 39
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 40
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 41
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 42
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 43
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 44
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 45
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 46
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 47
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 48
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 49
+      isOverflowSlot: 0
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 50
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 51
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 52
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 53
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 54
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 55
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 56
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 57
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 58
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 59
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 60
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 61
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 62
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 63
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 64
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 65
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 66
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 67
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 68
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 69
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 70
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 71
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 72
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 73
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 74
+      isOverflowSlot: 1
+      allowedEquipmentType: 0
+    currentCapacity: 50
+    maxCapacity: 75
+    useOverflowSlots: 1
+    level: 1

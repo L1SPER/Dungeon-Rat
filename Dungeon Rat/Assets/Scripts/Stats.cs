@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 [System.Serializable]
@@ -15,26 +14,15 @@ public class Stats
     public int minDamage;
     public int maxDamage;
     public int critChance;
+    public int critDamage;
 
     public int range;
 
     public Stats()
     {
-        health = 0;
-        armor = 0;
-        shield = 0;
-        
-        strength = 0;
-        agility = 0;
-        intelligence = 0;
-        
-        minDamage = 0;
-        maxDamage = 0;
-        critChance = 0;
-        
-        range = 0;
+        Clear();
     }
-    public Stats(int health, int armor, int shield, int strength, int agility, int intelligence, int minDamage, int maxDamage, int critChance, int range)
+    public Stats(int health, int armor, int shield, int strength, int agility, int intelligence, int minDamage, int maxDamage, int critChance,int critDamage, int range)
     {
         this.health = health;
         this.armor = armor;
@@ -47,6 +35,7 @@ public class Stats
         this.minDamage = minDamage;
         this.maxDamage = maxDamage;
         this.critChance = critChance;
+        this.critDamage= critDamage;
 
         this.range = range;
     }
@@ -64,12 +53,18 @@ public class Stats
         minDamage = 0;
         maxDamage = 0;
         critChance = 0;
+        critDamage = 0;
 
         range = 0;
     }
 
     public void Add(Stats other)
     {
+        if(other == null)
+        {
+            Debug.LogWarning("Attempted to add stats from a null reference. Operation aborted.");
+            return;
+        }    
         health += other.health;
         armor += other.armor;
         shield += other.shield;
@@ -81,12 +76,18 @@ public class Stats
         minDamage += other.minDamage;
         maxDamage += other.maxDamage;
         critChance += other.critChance;
+        critDamage += other.critDamage;
 
         range += other.range;
     }
 
     public void Subtract(Stats other)
     {
+        if(other == null)
+        {
+            Debug.LogWarning("Attempted to subtract stats from a null reference. Operation aborted.");
+            return;
+        }
         health -= other.health;
         armor -= other.armor;
         shield -= other.shield;
@@ -98,6 +99,7 @@ public class Stats
         minDamage -= other.minDamage;
         maxDamage -= other.maxDamage;
         critChance -= other.critChance;
+        critDamage -= other.critDamage;
 
         range -= other.range;
     }
@@ -113,6 +115,7 @@ public class Stats
             this.minDamage,
             this.maxDamage,
             this.critChance,
+            this.critDamage,
             this.range
             );
     }
@@ -120,7 +123,10 @@ public class Stats
     public void CopyFrom(Stats other)
     {
         if (other == null)
+        {
+            Debug.LogWarning("Attempted to copy stats from a null reference. Operation aborted.");
             return;
+        }    
 
         this.health = other.health;
         this.armor = other.armor;
@@ -133,6 +139,7 @@ public class Stats
         this.minDamage = other.minDamage;
         this.maxDamage = other.maxDamage;
         this.critChance = other.critChance;
+        this.critDamage = other.critDamage;
 
         this.range = other.range;
     }

@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 196aeb4b30195a2469d8173f976f88cd, type: 3}
+  m_Name: Character 2 Equipment
+  m_EditorClassIdentifier: Assembly-CSharp::EquipmentInventoryObject
+  id: 2
+  savePath: 
+  inventoryName: Character 2
+  itemDatabase: {fileID: 11400000, guid: 67a8c0e206ae4994e976b30add39fef6, type: 2}
+  inventory:
+    slots:
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 0
+      isOverflowSlot: 0
+      allowedEquipmentType: 1
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 1
+      isOverflowSlot: 0
+      allowedEquipmentType: 2
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 2
+      isOverflowSlot: 0
+      allowedEquipmentType: 3
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 3
+      isOverflowSlot: 0
+      allowedEquipmentType: 4
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 4
+      isOverflowSlot: 0
+      allowedEquipmentType: 5
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 5
+      isOverflowSlot: 0
+      allowedEquipmentType: 6
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 6
+      isOverflowSlot: 0
+      allowedEquipmentType: 7
+    - item:
+        itemData: {fileID: 0}
+        amount: 0
+      slotID: 7
+      isOverflowSlot: 0
+      allowedEquipmentType: 8
+    slotCount: 8

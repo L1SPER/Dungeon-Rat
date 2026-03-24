@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class PartyPreviewUI : MonoBehaviour
 {
-    [Header("Slot UIs")]
-    [SerializeField] private CharacterSlotUI [] slotsUI= new CharacterSlotUI[3];
+    [Header("Characters")]
+    [SerializeField] private GameObject[] characters = new GameObject[3];
 
     private PartyManager partyManager;
 
@@ -11,7 +11,7 @@ public class PartyPreviewUI : MonoBehaviour
 
     private void Awake()
     {
-        partyManager=FindFirstObjectByType<PartyManager>();
+        partyManager = FindFirstObjectByType<PartyManager>();
 
         if (partyManager == null)
         {
@@ -20,15 +20,15 @@ public class PartyPreviewUI : MonoBehaviour
     }
     private void Start()
     {
-         SetupSlots();
-         RefreshSlots();
+        SetupSlots();
+        RefreshSlots();
     }
 
     private void SetupSlots()
     {
-        for (int i = 0; i < slotsUI.Length; i++)
+        for (int i = 0; i < characters.Length; i++)
         {
-            slotsUI[i].Setup(i+1, this);
+            characters[i].transform.GetChild(0).GetComponent<CharacterSlotUI>().Setup(i + 1, this);
         }
     }
     public void SelectSlot(int index)
@@ -58,8 +58,8 @@ public class PartyPreviewUI : MonoBehaviour
 
         for (int i = 0; i < party.Length; i++)
         {
-            slotsUI[i].SetCharacter(party[i]);
-            slotsUI[i].SetSelected(i+1 == selectedSlotIndex);
+            characters[i].transform.GetChild(0).GetComponent<CharacterSlotUI>().SetCharacter(party[i]);
+            characters[i].transform.GetChild(0).GetComponent<CharacterSlotUI>().SetSelected(i + 1 == selectedSlotIndex);
         }
     }
     public void ClearSelection()
@@ -80,4 +80,28 @@ public class PartyPreviewUI : MonoBehaviour
         partyManager.SwapCharactersByPosition(pos1, pos2);
         RefreshSlots();
     }
+    public void OpenStatsPanel(int slotIndex)
+    {
+        RefreshSlots();
+        characters[slotIndex-1].transform.GetChild(0).gameObject.SetActive(false);
+        characters[slotIndex-1].transform.GetChild(1).gameObject.SetActive(true);
+    }
+    public void CloseStatsPanel(int slotIndex)
+    {
+        RefreshSlots();
+        characters[slotIndex - 1].transform.GetChild(0).gameObject.SetActive(true);
+        characters[slotIndex - 1].transform.GetChild(1).gameObject.SetActive(false);
+    }
+    public void OpenEquipmentPanel(int slotIndex)
+    {
+        RefreshSlots();
+        characters[slotIndex - 1].transform.GetChild(0).gameObject.SetActive(false);
+        characters[slotIndex - 1].transform.GetChild(2).gameObject.SetActive(true);
+    }
+    public void CloseEquipmentPanel(int slotIndex)
+    {
+        RefreshSlots();
+        characters[slotIndex - 1].transform.GetChild(0).gameObject.SetActive(true);
+        characters[slotIndex - 1].transform.GetChild(2).gameObject.SetActive(false);
+    }    
 }

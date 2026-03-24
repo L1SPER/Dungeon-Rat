@@ -3,7 +3,7 @@ using UnityEngine;
 public class InventoryUI : MonoBehaviour
 {
     [Header("Inventory Data")]
-    [SerializeField] private InventoryObject inventoryObject;
+    [SerializeField] private GeneralInventoryObject inventoryObject;
 
     [Header("UI")]
     [SerializeField] private InventorySlotUI slotPrefab;
