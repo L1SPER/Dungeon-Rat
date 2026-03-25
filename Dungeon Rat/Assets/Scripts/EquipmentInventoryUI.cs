@@ -35,7 +35,7 @@ public class EquipmentInventoryUI : MonoBehaviour
             if (slotUIs[i] == null)
                 continue;
 
-            slotUIs[i].SetSlot(inventory.GetSlot(i));
+            slotUIs[i].Bind(inventory, i, null, this);
         }
     }
 
@@ -49,7 +49,7 @@ public class EquipmentInventoryUI : MonoBehaviour
             if (slotUIs[i] == null)
                 continue;
 
-            slotUIs[i].SetSlot(equipmentInventoryObject.inventory.GetSlot(i));
+            slotUIs[i].Bind(equipmentInventoryObject.inventory, i, null, this);
         }
     }
 }

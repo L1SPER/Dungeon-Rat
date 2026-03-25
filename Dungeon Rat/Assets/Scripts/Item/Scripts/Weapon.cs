@@ -8,10 +8,10 @@ public class Weapon:EquipmentItemData
     public int maxDamage;
     public int range;
     public bool isBroken;
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         this.maxStackSize = 1;
-        this.equipmentType=EquipmentType.Weapon;
-        this.itemType = ItemType.Equipment;
+        this.equipmentType = EquipmentType.Weapon;
     }
 }

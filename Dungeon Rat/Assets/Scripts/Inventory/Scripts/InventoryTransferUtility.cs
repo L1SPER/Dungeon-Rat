@@ -52,23 +52,7 @@ public static class InventoryTransferUtility
 
         ItemData movingItemData = fromSlot.item.itemData;
 
-        // Önce boş slot
-        for (int i = 0; i < targetInventory.Slots.Length; i++)
-        {
-            InventorySlot targetSlot = targetInventory.Slots[i];
-            if (targetSlot == null)
-                continue;
-
-            if (!targetSlot.IsEmpty())
-                continue;
-
-            if (!targetSlot.CanPlaceItem(movingItemData, targetSlot.isOverflowSlot))
-                continue;
-
-            return MoveOrMergeOrSwap(fromSlot, targetSlot);
-        }
-
-        // Sonra stack
+        //Ilk bos stack
         if (movingItemData.IsStackable)
         {
             for (int i = 0; i < targetInventory.Slots.Length; i++)
@@ -82,6 +66,22 @@ public static class InventoryTransferUtility
 
                 return MoveOrMergeOrSwap(fromSlot, targetSlot);
             }
+        }
+
+        // Sonra boş slot
+        for (int i = 0; i < targetInventory.Slots.Length; i++)
+        {
+            InventorySlot targetSlot = targetInventory.Slots[i];
+            if (targetSlot == null)
+                continue;
+
+            if (!targetSlot.IsEmpty())
+                continue;
+
+            if (!targetSlot.CanPlaceItem(movingItemData, targetSlot.isOverflowSlot))
+                continue;
+
+            return MoveOrMergeOrSwap(fromSlot, targetSlot);
         }
 
         return false;

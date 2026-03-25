@@ -7,4 +7,9 @@ public class EquipmentItemData : ItemData
 
     [Header("Bonus Stats")]
     public Stats bonusStats = new Stats();
+
+    protected virtual void Awake()
+    {
+        itemType= ItemType.Equipment;
+    }
 }

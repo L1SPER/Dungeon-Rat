@@ -19,26 +19,26 @@ MonoBehaviour:
   inventory:
     slots:
     - item:
-        itemData: {fileID: 0}
-        amount: 0
+        itemData: {fileID: 11400000, guid: c75e72761b0f60d4bb742b3aff974855, type: 2}
+        amount: 1
       slotID: 0
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 0}
-        amount: 0
+        itemData: {fileID: 11400000, guid: b0432e6cd44d22342bbf14c4cefe33f3, type: 2}
+        amount: 1
       slotID: 1
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 0}
-        amount: 0
+        itemData: {fileID: 11400000, guid: ab5c701054496fa4fbdaa5f789309e23, type: 2}
+        amount: 1
       slotID: 2
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 0}
-        amount: 0
+        itemData: {fileID: 11400000, guid: 3ed07a857d587704b83cf34ec8a80364, type: 2}
+        amount: 50
       slotID: 3
       isOverflowSlot: 0
       allowedEquipmentType: 0

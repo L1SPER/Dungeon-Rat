@@ -39,7 +39,7 @@ public class InventoryUI : MonoBehaviour
         for (int i = 0; i < slotUIArray.Length; i++) 
         {
             InventorySlotUI newSlotUI = Instantiate(slotPrefab, slotsParent);
-            newSlotUI.SetSlot(inventorySlots[i]);
+            newSlotUI.Bind(inventoryObject.inventory, i, this, null);
             slotUIArray[i] = newSlotUI;
         }
     }
@@ -52,10 +52,12 @@ public class InventoryUI : MonoBehaviour
         }
 
         InventorySlot[] slots = inventoryObject.GetSlots;
+        if (slots == null)
+            return;
 
         for (int i = 0; i < slots.Length; i++)
         {
-            slotUIArray[i].SetSlot(slots[i]);
+            slotUIArray[i].Bind(inventoryObject.inventory, i, this, null);
         }
     }
 }

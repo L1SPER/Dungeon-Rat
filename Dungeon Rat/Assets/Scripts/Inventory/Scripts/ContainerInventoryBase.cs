@@ -97,7 +97,7 @@ public abstract class ContainerInventoryBase : InventoryBase
     {
         for (int i = 0; i < slots.Length; i++)
         {
-            InventorySlot slot = slots[i];
+            InventorySlot slot = slots[i];  
 
             if (slot == null || slot.isOverflowSlot != overflowSlots)
                 continue;
@@ -206,86 +206,6 @@ public abstract class ContainerInventoryBase : InventoryBase
         return SplitSlot(fromIndex, targetIndex, splitAmount);
     }
 
-    public int FindFirstSlotByEquipmentType(EquipmentType equipmentType)
-    {
-        if (slots == null)
-            return -1;
-
-        for (int i = 0; i < slots.Length; i++)
-        {
-            if (slots[i] == null)
-                continue;
-
-            if (slots[i].AllowedEquipmentType == equipmentType)
-                return i;
-        }
-
-        return -1;
-    }
-
-    public bool TryEquipItemToMatchingSlot(EquipmentItemData equipmentItem)
-    {
-        if (equipmentItem == null)
-            return false;
-
-        int slotIndex = FindFirstSlotByEquipmentType(equipmentItem.equipmentType);
-        if (slotIndex == -1)
-            return false;
-
-        return TrySetItemToSlot(slotIndex, equipmentItem, 1, false);
-    }
-    public virtual bool TrySetItemToSlot(int slotIndex, ItemData itemData, int amount = 1, bool allowOverflowSlot = false)
-    {
-        if (!IsValidIndex(slotIndex))
-            return false;
-
-        if (itemData == null || amount <= 0)
-            return false;
-
-        InventorySlot slot = slots[slotIndex];
-        if (slot == null)
-            return false;
-
-        if (!slot.CanPlaceItem(itemData, allowOverflowSlot))
-            return false;
-
-        if (itemData.IsStackable)
-            amount = Mathf.Min(amount, itemData.maxStackSize);
-        else
-            amount = 1;
-
-        slot.SetItem(itemData, amount);
-        return true;
-    }
-
-    public virtual void ForceSetItemToSlot(int slotIndex, ItemData itemData, int amount = 1)
-    {
-        if (!IsValidIndex(slotIndex))
-            return;
-
-        if (itemData == null || amount <= 0)
-        {
-            slots[slotIndex].ClearSlot();
-            return;
-        }
-
-        if (!itemData.IsStackable)
-            amount = 1;
-        else
-            amount = Mathf.Min(amount, itemData.maxStackSize);
-
-        slots[slotIndex].SetItem(itemData, amount);
-    }
-
-    public virtual bool TryClearSlot(int slotIndex)
-    {
-        if (!IsValidIndex(slotIndex))
-            return false;
-
-        slots[slotIndex].ClearSlot();
-        return true;
-    }
-
     protected int FindFirstValidEmptySlotForSplit(ItemData itemData)
     {
         if (slots == null || itemData == null)
@@ -383,5 +303,57 @@ public abstract class ContainerInventoryBase : InventoryBase
         }
 
         return -1;
+    }
+    //Var olan slotun uzerine yazabilir dikkat!!!
+    public virtual bool TrySetItemToSlot(int slotIndex, ItemData itemData, int amount = 1, bool allowOverflowSlot = false)
+    {
+        if (!IsValidIndex(slotIndex))
+            return false;
+
+        if (itemData == null || amount <= 0)
+            return false;
+
+        InventorySlot slot = slots[slotIndex];
+        if (slot == null)
+            return false;
+
+        if (!slot.CanPlaceItem(itemData, allowOverflowSlot))
+            return false;
+
+        if (itemData.IsStackable)
+            amount = Mathf.Min(amount, itemData.maxStackSize);
+        else
+            amount = 1;
+
+        slot.SetItem(itemData, amount);
+        return true;
+    }
+
+    public virtual bool TryClearSlot(int slotIndex)
+    {
+        if (!IsValidIndex(slotIndex))
+            return false;
+
+        slots[slotIndex].ClearSlot();
+        return true;
+    }
+
+    public virtual void UnsafeForceSetItemToSlot(int slotIndex, ItemData itemData, int amount = 1)
+    {
+        if (!IsValidIndex(slotIndex))
+            return;
+
+        if (itemData == null || amount <= 0)
+        {
+            slots[slotIndex].ClearSlot();
+            return;
+        }
+
+        if (!itemData.IsStackable)
+            amount = 1;
+        else
+            amount = Mathf.Min(amount, itemData.maxStackSize);
+
+        slots[slotIndex].SetItem(itemData, amount);
     }
 }

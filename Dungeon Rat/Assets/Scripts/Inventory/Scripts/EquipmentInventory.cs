@@ -40,6 +40,23 @@ public class EquipmentInventory : InventoryBase
         }
     }
 
+    public void ConfigureDefaultRestrictions()
+    {
+        ConfigureEquipmentInventory();
+
+        if (slots.Length < 8)
+            return;
+
+        SetSlotRestriction(0, EquipmentType.Helmet);
+        SetSlotRestriction(1, EquipmentType.Chest);
+        SetSlotRestriction(2, EquipmentType.Glove);
+        SetSlotRestriction(3, EquipmentType.Trousers);
+        SetSlotRestriction(4, EquipmentType.Shoe);
+        SetSlotRestriction(5, EquipmentType.Amulet);
+        SetSlotRestriction(6, EquipmentType.Ring);
+        SetSlotRestriction(7, EquipmentType.Weapon);
+    }
+
     public void SetSlotRestriction(int slotIndex, EquipmentType equipmentType)
     {
         if (!IsValidIndex(slotIndex))
@@ -103,6 +120,30 @@ public class EquipmentInventory : InventoryBase
             return false;
 
         return targetSlot.CanPlaceItem(itemData, false);
+    }
+    //Var olan slotun uzerine yazabilir dikkat!!!
+    public bool TrySetItemToSlot(int slotIndex, ItemData itemData, int amount = 1)
+    {
+        if (!IsValidIndex(slotIndex))
+            return false;
+
+        if (itemData == null || amount <= 0)
+            return false;
+
+        InventorySlot slot = slots[slotIndex];
+        if (slot == null)
+            return false;
+
+        if (!slot.CanPlaceItem(itemData, false))
+            return false;
+
+        if (itemData.IsStackable)
+            amount = Mathf.Min(amount, itemData.maxStackSize);
+        else
+            amount = 1;
+
+        slot.SetItem(itemData, amount);
+        return true;
     }
 
     public bool EquipFromInventory(ContainerInventoryBase sourceInventory, int sourceIndex, int targetEquipmentSlotIndex)
@@ -181,44 +222,4 @@ public class EquipmentInventory : InventoryBase
         return slots[slotIndex] == null || slots[slotIndex].IsEmpty();
     }
 
-    public void ConfigureDefaultRestrictions()
-    {
-        ConfigureEquipmentInventory();
-
-        if (slots.Length < 8)
-            return;
-
-        SetSlotRestriction(0, EquipmentType.Helmet);
-        SetSlotRestriction(1, EquipmentType.Chest);
-        SetSlotRestriction(2, EquipmentType.Glove);
-        SetSlotRestriction(3, EquipmentType.Trousers);
-        SetSlotRestriction(4, EquipmentType.Shoe);
-        SetSlotRestriction(5, EquipmentType.Amulet);
-        SetSlotRestriction(6, EquipmentType.Ring);
-        SetSlotRestriction(7, EquipmentType.Weapon);
-    }
-
-    public bool TrySetItemToSlot(int slotIndex, ItemData itemData, int amount = 1)
-    {
-        if (!IsValidIndex(slotIndex))
-            return false;
-
-        if (itemData == null || amount <= 0)
-            return false;
-
-        InventorySlot slot = slots[slotIndex];
-        if (slot == null)
-            return false;
-
-        if (!slot.CanPlaceItem(itemData, false))
-            return false;
-
-        if (itemData.IsStackable)
-            amount = Mathf.Min(amount, itemData.maxStackSize);
-        else
-            amount = 1;
-
-        slot.SetItem(itemData, amount);
-        return true;
-    }
 }

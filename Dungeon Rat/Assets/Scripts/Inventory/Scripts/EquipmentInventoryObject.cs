@@ -16,6 +16,6 @@ public class EquipmentInventoryObject : ScriptableObject
         if (inventory == null)
             return;
 
-        inventory.ConfigureEquipmentInventory();
+        inventory.ConfigureDefaultRestrictions();
     }
 }

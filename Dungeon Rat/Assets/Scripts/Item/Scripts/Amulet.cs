@@ -4,9 +4,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Amulet", menuName = "Item/EquipmentItemData/Amulet", order = 6)]
 public class Amulet : EquipmentItemData
 {
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         this.equipmentType = EquipmentType.Amulet;
-        this.itemType = ItemType.Equipment;
     }
 }
