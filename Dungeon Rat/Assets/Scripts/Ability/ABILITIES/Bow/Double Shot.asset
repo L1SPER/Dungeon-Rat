@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da8d0787bf59bd848834f61d48dfb463, type: 3}
+  m_Name: Double Shot
+  m_EditorClassIdentifier: Assembly-CSharp::DoubleShotAbility
+  abilityName: Double Shot
+  icon: {fileID: 0}
+  description: "\u0130ki farkl\u0131 d\xFC\u015Fmana birer ok yollar."
+  apCost: 1
+  manaCost: 0
+  cooldownTurns: 2
+  requiresTarget: 1
+  targetSide: 1
+  damageMultiplier: 1

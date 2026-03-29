@@ -53,16 +53,4 @@ public class Health
         if (currentHealth > maxHealth)
             currentHealth = maxHealth;
     }
-    public void SetInvulnerable(bool _isInvulnerable)
-    {
-        this.isInvulnerable = _isInvulnerable;
-    }
-    public void SetIsDead(bool _isDead)
-    {
-        this.isDead = _isDead;
-    }
-    public bool IsDead()
-    {
-        return isDead;
-    }
 }

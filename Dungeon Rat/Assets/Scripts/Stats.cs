@@ -16,13 +16,11 @@ public class Stats
     public int critChance;
     public int critDamage;
 
-    public int range;
-
     public Stats()
     {
         Clear();
     }
-    public Stats(int health, int armor, int shield, int strength, int agility, int intelligence, int minDamage, int maxDamage, int critChance,int critDamage, int range)
+    public Stats(int health, int armor, int shield, int strength, int agility, int intelligence, int minDamage, int maxDamage, int critChance,int critDamage)
     {
         this.health = health;
         this.armor = armor;
@@ -36,8 +34,6 @@ public class Stats
         this.maxDamage = maxDamage;
         this.critChance = critChance;
         this.critDamage= critDamage;
-
-        this.range = range;
     }
 
     public void Clear()
@@ -54,8 +50,6 @@ public class Stats
         maxDamage = 0;
         critChance = 0;
         critDamage = 0;
-
-        range = 0;
     }
 
     public void Add(Stats other)
@@ -77,8 +71,6 @@ public class Stats
         maxDamage += other.maxDamage;
         critChance += other.critChance;
         critDamage += other.critDamage;
-
-        range += other.range;
     }
 
     public void Subtract(Stats other)
@@ -100,8 +92,6 @@ public class Stats
         maxDamage -= other.maxDamage;
         critChance -= other.critChance;
         critDamage -= other.critDamage;
-
-        range -= other.range;
     }
 
     public Stats Clone()
@@ -115,8 +105,7 @@ public class Stats
             this.minDamage,
             this.maxDamage,
             this.critChance,
-            this.critDamage,
-            this.range
+            this.critDamage
             );
     }
 
@@ -140,8 +129,6 @@ public class Stats
         this.maxDamage = other.maxDamage;
         this.critChance = other.critChance;
         this.critDamage = other.critDamage;
-
-        this.range = other.range;
     }
 
     public static Stats operator+(Stats a, Stats b)

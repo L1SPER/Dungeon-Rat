@@ -1,60 +1,118 @@
 using UnityEngine;
-using System.Collections.Generic;
 using System;
-using Unity.VisualScripting;
+
 public class PartyManager : MonoBehaviour
 {
-    private Character[] partySlots = new Character [3];
-    [SerializeField] private EquipmentInventoryObject[] characterInventoryObject = new EquipmentInventoryObject [3];
-    [SerializeField] private EquipmentItemData [] weapons = new EquipmentItemData[3];
+    private Character[] partySlots = new Character[3];
+
+    [SerializeField] private EquipmentInventoryObject[] characterInventoryObject = new EquipmentInventoryObject[3];
+    [SerializeField] private EquipmentItemData[] weapons = new EquipmentItemData[3];
+
     private void Start()
     {
-        CreateStartingParty();    
+        CreateStartingParty();
     }
-    
+
     public void CreateStartingParty()
     {
-        if(!IsPartyEmpty())
+        if (!IsPartyEmpty())
             return;
 
         Character warrior = new Character(
             "Borin",
             ClassType.Warrior,
             characterInventoryObject[0]
-        //new Weapon("Basic Sword", WeaponType.Sword, 5, 15, 1)
         );
 
         Character archer = new Character(
             "Lira",
             ClassType.Archer,
             characterInventoryObject[1]
-            //new Weapon("Basic Bow", WeaponType.Bow, 4, 12, 3)
         );
 
         Character mage = new Character(
             "Mira",
             ClassType.Mage,
             characterInventoryObject[2]
-            //,new Weapon("Basic Wand", WeaponType.Wand, 2, 8, 2)
         );
 
-        
+        ApplyStartingBaseStats(warrior);
+        ApplyStartingBaseStats(archer);
+        ApplyStartingBaseStats(mage);
+
         AddCharacter(warrior);
         AddCharacter(archer);
         AddCharacter(mage);
-
-        //Karakterlere silah verilecek.
-
-        Item _item1= new Item(weapons[0],1);
-        Item _item2 = new Item(weapons[1], 1);
-        Item _item3 = new Item(weapons[2], 1);
 
         GiveStartingWeapon(warrior, weapons[0]);
         GiveStartingWeapon(archer, weapons[1]);
         GiveStartingWeapon(mage, weapons[2]);
 
+        warrior.Initialize();
+        archer.Initialize();
+        mage.Initialize();
+
         Debug.Log("Starting party is created!");
         PrintParty();
+    }
+
+    private void ApplyStartingBaseStats(Character character)
+    {
+        if (character == null)
+            return;
+
+        character.baseStats.Clear();
+
+        switch (character.classType)
+        {
+            case ClassType.Warrior:
+                character.baseStats.health = 100;
+                character.baseStats.armor = 0;
+                character.baseStats.shield = 0;
+
+                character.baseStats.strength = 1;
+                character.baseStats.agility = 0;
+                character.baseStats.intelligence = 0;
+
+                character.baseStats.minDamage = 3;
+                character.baseStats.maxDamage = 5;
+
+                character.baseStats.critChance = 0;
+                character.baseStats.critDamage = 0;
+                break;
+
+            case ClassType.Archer:
+                character.baseStats.health = 90;
+                character.baseStats.armor = 0;
+                character.baseStats.shield = 0;
+
+                character.baseStats.strength = 0;
+                character.baseStats.agility = 1;
+                character.baseStats.intelligence = 0;
+
+                character.baseStats.minDamage = 2;
+                character.baseStats.maxDamage = 4;
+
+                character.baseStats.critChance = 0;
+                character.baseStats.critDamage = 0;
+                break;
+
+            case ClassType.Mage:
+                character.baseStats.health = 80;
+                character.baseStats.armor = 0;
+                character.baseStats.shield = 0;
+
+                character.baseStats.strength = 0;
+                character.baseStats.agility = 0;
+                character.baseStats.intelligence = 1;
+
+                character.baseStats.minDamage = 1;
+                character.baseStats.maxDamage = 3;
+
+                character.baseStats.critChance = 0;
+                character.baseStats.critDamage = 0;
+                break;
+        }
     }
 
     private void GiveStartingWeapon(Character character, EquipmentItemData weapon)
@@ -163,7 +221,7 @@ public class PartyManager : MonoBehaviour
             if (c == null)
                 Debug.Log($"Slot {i + 1}: Empty");
             else
-                Debug.Log($"Slot {i + 1}: {c.name} | {c.classType} ");
+                Debug.Log($"Slot {i + 1}: {c.name} | {c.classType}");
         }
     }
 
@@ -172,10 +230,9 @@ public class PartyManager : MonoBehaviour
         for (int i = 0; i < partySlots.Length; i++)
         {
             if (partySlots[i] != null)
-            {
                 return false;
-            }
         }
+
         return true;
     }
 
@@ -193,16 +250,20 @@ public class PartyManager : MonoBehaviour
             Debug.LogWarning("Invalid positions for swapping.");
             return;
         }
+
         int index1 = pos1 - 1;
         int index2 = pos2 - 1;
+
         Character temp = partySlots[index1];
         partySlots[index1] = partySlots[index2];
         partySlots[index2] = temp;
-        // Update character positions
+
         if (partySlots[index1] != null)
             partySlots[index1].position = index1 + 1;
+
         if (partySlots[index2] != null)
             partySlots[index2].position = index2 + 1;
+
         Debug.Log($"Swapped characters in positions {pos1} and {pos2}.");
     }
 

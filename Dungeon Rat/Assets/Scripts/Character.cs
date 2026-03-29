@@ -1,5 +1,5 @@
-using TreeEditor;
 using UnityEngine;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class Character : IDamageable
@@ -7,6 +7,14 @@ public class Character : IDamageable
     public string name;
     public ClassType classType;
     public int position;
+    public Sprite characterSprite;
+
+    [Header("Temporary Battle Effects")]
+    public bool skipNextTurnOnce;
+    private bool firstHitDamageReductionActive;
+    private int firstHitDamageReductionPercent;
+
+    private Dictionary<AbilityBase, int> abilityCooldowns = new Dictionary<AbilityBase, int>();
 
     [Header("Inventory Data")]
     [SerializeField] private EquipmentInventoryObject characterInventoryObject;
@@ -41,7 +49,7 @@ public class Character : IDamageable
         this.name = name;
         this.classType = classType;
         this.position = position;
-        this.characterInventoryObject= inventoryObject;
+        this.characterInventoryObject = inventoryObject;
     }
 
     public Character(string name, ClassType classType, EquipmentInventoryObject inventoryObject)
@@ -74,7 +82,9 @@ public class Character : IDamageable
         ApplyDerivedStats();
         ClampFinalStats();
 
-        health.SetMaxHealth(finalStats.health);
+        if (health != null && health.maxHealth > 0)
+            health.SetMaxHealth(finalStats.health);
+
         currentShield = Mathf.Clamp(currentShield, 0, finalStats.shield);
     }
 
@@ -100,13 +110,7 @@ public class Character : IDamageable
         if (finalStats.shield < 0)
         {
             Debug.LogWarning($"{name} final shield 0'ın altına düştü: {finalStats.shield}");
-            finalStats.shield = Mathf.Clamp(finalStats.shield,0,finalStats.shield);
-        }
-
-        if (finalStats.range < 1)
-        {
-            Debug.LogWarning($"{name} final range 0'ın altına düştü: {finalStats.range}");
-            finalStats.range = Mathf.Clamp(finalStats.range, 1, finalStats.range);
+            finalStats.shield = Mathf.Clamp(finalStats.shield, 0, finalStats.shield);
         }
 
         if (finalStats.critChance < 0 || finalStats.critChance > 100)
@@ -201,33 +205,50 @@ public class Character : IDamageable
 
     public void TakeDamage(int damage)
     {
+        ApplyDamage(damage);
+    }
+
+    public int ApplyDamage(int damage)
+    {
         if (health.isInvulnerable || health.isDead || damage <= 0)
         {
             Debug.LogWarning($"{name} is invulnerable, dead, or damage is non-positive. No damage taken.");
-            return;
+            return 0;
         }
 
-        int reducedDmg = Mathf.Max(damage - finalStats.armor, 0);
+        int incomingDamage = damage;
+
+        if (firstHitDamageReductionActive)
+        {
+            incomingDamage = Mathf.CeilToInt(incomingDamage * (100 - firstHitDamageReductionPercent) / 100f);
+            firstHitDamageReductionActive = false;
+        }
+
+        int reducedDmg = Mathf.Max(incomingDamage - finalStats.armor, 0);
 
         if (reducedDmg <= 0)
         {
             Debug.Log($"{name} armor absorbed all damage. No health lost.");
-            return;
+            return 0;
         }
+
+        int beforeShield = currentShield;
+        int beforeHealth = health.currentHealth;
 
         int restDmg = 0;
 
         if (currentShield > 0)
-        {
             restDmg = TakeDamageToShield(reducedDmg);
-        }
+        else
+            restDmg = reducedDmg;
 
-        if (restDmg <= 0)
-        {
-            Debug.Log($"{name} shield absorbed all damage. No health lost.");
-            return;
-        }
-        health.TakeDamage(restDmg);
+        if (restDmg > 0)
+            health.TakeDamage(restDmg);
+
+        int shieldDamage = beforeShield - currentShield;
+        int healthDamage = beforeHealth - health.currentHealth;
+
+        return shieldDamage + healthDamage;
     }
 
     public int TakeDamageToShield(int dmg)
@@ -237,6 +258,7 @@ public class Character : IDamageable
             Debug.LogWarning("TakeShieldDamage called with non-positive damage: " + dmg);
             return 0;
         }
+
         int shieldAbsorb = Mathf.Min(currentShield, dmg);
         currentShield -= shieldAbsorb;
 
@@ -244,4 +266,101 @@ public class Character : IDamageable
         return dmg > 0 ? dmg : 0;
     }
 
+    private bool HasCompatibleWeapon(Character character)
+    {
+        if (character == null)
+            return false;
+
+        Weapon weapon = character.GetEquippedWeapon();
+        if (weapon == null)
+            return false;
+
+        switch (character.classType)
+        {
+            case ClassType.Warrior:
+                return weapon.WeaponType == WeaponType.Sword || weapon.WeaponType == WeaponType.Axe;
+            case ClassType.Archer:
+                return weapon.WeaponType == WeaponType.Bow || weapon.WeaponType == WeaponType.Crossbow;
+            case ClassType.Mage:
+                return weapon.WeaponType == WeaponType.Staff || weapon.WeaponType == WeaponType.Wand;
+        }
+
+        return false;
+    }
+
+    public Weapon GetEquippedWeapon()
+    {
+        if (CharacterInventoryObject == null || CharacterInventoryObject.inventory == null)
+            return null;
+
+        EquipmentItemData equippedItem = CharacterInventoryObject.inventory.GetEquippedItem(7);
+        return equippedItem as Weapon;
+    }
+
+    public void ApplySkipNextTurn()
+    {
+        skipNextTurnOnce = true;
+    }
+
+    public bool ConsumeSkipNextTurn()
+    {
+        if (!skipNextTurnOnce)
+            return false;
+
+        skipNextTurnOnce = false;
+        return true;
+    }
+
+    public void SetFirstHitDamageReduction(int percent)
+    {
+        firstHitDamageReductionActive = true;
+        firstHitDamageReductionPercent = Mathf.Clamp(percent, 0, 100);
+    }
+
+    public bool IsAbilityOnCooldown(AbilityBase ability)
+    {
+        if (ability == null)
+            return false;
+
+        if (!abilityCooldowns.TryGetValue(ability, out int remainingTurns))
+            return false;
+
+        return remainingTurns > 0;
+    }
+
+    public int GetAbilityCooldownRemaining(AbilityBase ability)
+    {
+        if (ability == null)
+            return 0;
+
+        if (!abilityCooldowns.TryGetValue(ability, out int remainingTurns))
+            return 0;
+
+        return Mathf.Max(0, remainingTurns);
+    }
+
+    public void StartAbilityCooldown(AbilityBase ability)
+    {
+        if (ability == null || ability.cooldownTurns <= 0)
+            return;
+
+        abilityCooldowns[ability] = ability.cooldownTurns;
+    }
+
+    public void ReduceAbilityCooldowns()
+    {
+        if (abilityCooldowns.Count == 0)
+            return;
+
+        List<AbilityBase> keys = new List<AbilityBase>(abilityCooldowns.Keys);
+
+        for (int i = 0; i < keys.Count; i++)
+        {
+            AbilityBase ability = keys[i];
+            abilityCooldowns[ability]--;
+
+            if (abilityCooldowns[ability] <= 0)
+                abilityCooldowns[ability] = 0;
+        }
+    }
 }

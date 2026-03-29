@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8a7cef88a473e242a57c7a9ab3611c6, type: 3}
+  m_Name: Sword Guard
+  m_EditorClassIdentifier: Assembly-CSharp::SelfGuardAbility
+  abilityName: Guard
+  icon: {fileID: 0}
+  description: "Bu tur al\u0131nacak ilk hasar\u0131 %50 azalt\u0131r."
+  apCost: 1
+  manaCost: 0
+  cooldownTurns: 3
+  requiresTarget: 0
+  targetSide: 0
+  reducePercent: 50

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fec0268041745af44900c4e9589bcb22, type: 3}
+  m_Name: Single Heal
+  m_EditorClassIdentifier: Assembly-CSharp::SingleTargetHealAbility
+  abilityName: Single Heal
+  icon: {fileID: 0}
+  description: "Bir tak\u0131m arkada\u015F\u0131n\u0131n can\u0131n\u0131 yeniler."
+  apCost: 1
+  manaCost: 1
+  cooldownTurns: 3
+  requiresTarget: 1
+  targetSide: 2
+  healAmount: 15

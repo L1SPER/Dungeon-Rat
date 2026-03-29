@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1288354ab86ba9a449f543d29db214bd, type: 3}
+  m_Name: Team Heal
+  m_EditorClassIdentifier: Assembly-CSharp::TeamHealAbility
+  abilityName: Team Heal
+  icon: {fileID: 0}
+  description: "T\xFCm tak\u0131m\u0131n can\u0131n\u0131 yeniler."
+  apCost: 1
+  manaCost: 1
+  cooldownTurns: 3
+  requiresTarget: 0
+  targetSide: 0
+  healAmount: 12

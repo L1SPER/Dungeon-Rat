@@ -8,6 +8,12 @@ public class Weapon:EquipmentItemData
     public int maxDamage;
     public int range;
     public bool isBroken;
+
+    [Header("Abilities")]
+    public AbilityBase basicAttackAbility;
+    public AbilityBase ability1;
+    public AbilityBase ability2;
+
     protected override void Awake()
     {
         base.Awake();

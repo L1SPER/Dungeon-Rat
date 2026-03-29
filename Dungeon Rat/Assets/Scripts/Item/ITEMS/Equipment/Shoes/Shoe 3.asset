@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5976c17521a83bb4d8bfee5e11286cd3, type: 3}
+  m_Name: Shoe 3
+  m_EditorClassIdentifier: Assembly-CSharp::Shoe
+  itemName: 
+  itemID: 0
+  description: 
+  icon: {fileID: 7431443166627799094, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
+  itemType: 1
+  itemRarity: 2
+  maxStackSize: 1
+  equipmentType: 5
+  durability: 14
+  bonusStats:
+    health: 0
+    armor: 0
+    shield: 0
+    strength: 0
+    agility: 0
+    intelligence: 0
+    minDamage: 0
+    maxDamage: 0
+    critChance: 0
+    critDamage: 0

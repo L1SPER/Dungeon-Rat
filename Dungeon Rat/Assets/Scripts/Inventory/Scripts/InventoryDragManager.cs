@@ -64,7 +64,7 @@ public class InventoryDragManager : MonoBehaviour
         }
     }
 
-    public void EndDrag()
+    public void CompleteDrag()
     {
         isDragging = false;
         sourceSlotUI = null;

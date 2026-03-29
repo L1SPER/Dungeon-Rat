@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd62654d6e69de34c84570489bc818af, type: 3}
+  m_Name: Staff 3
+  m_EditorClassIdentifier: Assembly-CSharp::Weapon
+  itemName: Arcane Staff
+  itemID: 17
+  description: 
+  icon: {fileID: -6407407995499387161, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
+  itemType: 1
+  itemRarity: 2
+  maxStackSize: 1
+  equipmentType: 8
+  durability: 14
+  bonusStats:
+    health: 0
+    armor: 0
+    shield: 0
+    strength: 0
+    agility: 0
+    intelligence: 0
+    minDamage: 0
+    maxDamage: 0
+    critChance: 0
+    critDamage: 0
+  WeaponType: 4
+  minDamage: 8
+  maxDamage: 14
+  range: 2
+  isBroken: 0
+  basicAttackAbility: {fileID: 11400000, guid: bc5192b8b33fa314c8478356b56e7fe3, type: 2}
+  ability1: {fileID: 11400000, guid: 7bfc31edc69344f4e87920666c63bc87, type: 2}
+  ability2: {fileID: 11400000, guid: 54f53647c8d7aff43849755b21565553, type: 2}

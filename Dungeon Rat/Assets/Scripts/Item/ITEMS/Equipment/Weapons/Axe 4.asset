@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd62654d6e69de34c84570489bc818af, type: 3}
+  m_Name: Axe 4
+  m_EditorClassIdentifier: Assembly-CSharp::Weapon
+  itemName: Warforged Axe
+  itemID: 3
+  description: 
+  icon: {fileID: 4807586124992550770, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
+  itemType: 1
+  itemRarity: 3
+  maxStackSize: 1
+  equipmentType: 8
+  durability: 16
+  bonusStats:
+    health: 0
+    armor: 0
+    shield: 0
+    strength: 0
+    agility: 0
+    intelligence: 0
+    minDamage: 0
+    maxDamage: 0
+    critChance: 0
+    critDamage: 0
+  WeaponType: 1
+  minDamage: 10
+  maxDamage: 20
+  range: 1
+  isBroken: 0
+  basicAttackAbility: {fileID: 11400000, guid: c96105a88aef63e4cbc5e09d875cec5b, type: 2}
+  ability1: {fileID: 11400000, guid: fab8f5b5a8bfbcb4d8d2c9a1a5168b23, type: 2}
+  ability2: {fileID: 11400000, guid: 988c399075143ef459fae0517be16ba8, type: 2}

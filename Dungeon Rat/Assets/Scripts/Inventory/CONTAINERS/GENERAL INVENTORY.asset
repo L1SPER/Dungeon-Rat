@@ -25,92 +25,92 @@ MonoBehaviour:
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 11400000, guid: b0432e6cd44d22342bbf14c4cefe33f3, type: 2}
+        itemData: {fileID: 11400000, guid: f63635649fb704e489019f86c3d9b3a0, type: 2}
         amount: 1
       slotID: 1
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 11400000, guid: ab5c701054496fa4fbdaa5f789309e23, type: 2}
+        itemData: {fileID: 11400000, guid: c75e72761b0f60d4bb742b3aff974855, type: 2}
         amount: 1
       slotID: 2
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 11400000, guid: 3ed07a857d587704b83cf34ec8a80364, type: 2}
-        amount: 50
+        itemData: {fileID: 11400000, guid: 91d8b2d8902fe44408ababa7b1574805, type: 2}
+        amount: 1
       slotID: 3
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 0}
-        amount: 0
+        itemData: {fileID: 11400000, guid: bc14ba9d7d9c8114ab1c8cf39012a22b, type: 2}
+        amount: 1
       slotID: 4
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 0}
-        amount: 0
+        itemData: {fileID: 11400000, guid: ab5c701054496fa4fbdaa5f789309e23, type: 2}
+        amount: 1
       slotID: 5
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 0}
-        amount: 0
+        itemData: {fileID: 11400000, guid: cefab7fe2dfd49b48bffb7151590edd1, type: 2}
+        amount: 1
       slotID: 6
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 0}
-        amount: 0
+        itemData: {fileID: 11400000, guid: 3220a6f00888df046b31a49d302df0fa, type: 2}
+        amount: 1
       slotID: 7
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 0}
-        amount: 0
+        itemData: {fileID: 11400000, guid: ad8abcb4f13194347a06942f21972822, type: 2}
+        amount: 1
       slotID: 8
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 0}
-        amount: 0
+        itemData: {fileID: 11400000, guid: 7d41ad8126cd6e3409d2fb6c518efe40, type: 2}
+        amount: 1
       slotID: 9
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 0}
-        amount: 0
+        itemData: {fileID: 11400000, guid: ccf841fca11f3b246a60de0007c23957, type: 2}
+        amount: 1
       slotID: 10
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 0}
-        amount: 0
+        itemData: {fileID: 11400000, guid: 6c6e18cd103d2cc4cb2286fe577a6c92, type: 2}
+        amount: 1
       slotID: 11
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 0}
-        amount: 0
+        itemData: {fileID: 11400000, guid: aa28b4585b500944b8366599dd41d1d9, type: 2}
+        amount: 1
       slotID: 12
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 0}
-        amount: 0
+        itemData: {fileID: 11400000, guid: 82e033228b9ac15459f78d386a563a49, type: 2}
+        amount: 1
       slotID: 13
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 0}
-        amount: 0
+        itemData: {fileID: 11400000, guid: fa0bdb2208a51074aada7f689f4fb73a, type: 2}
+        amount: 1
       slotID: 14
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 0}
-        amount: 0
+        itemData: {fileID: 11400000, guid: 3ed07a857d587704b83cf34ec8a80364, type: 2}
+        amount: 50
       slotID: 15
       isOverflowSlot: 0
       allowedEquipmentType: 0

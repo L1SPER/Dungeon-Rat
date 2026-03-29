@@ -48,12 +48,12 @@ public class EquipmentInventory : InventoryBase
             return;
 
         SetSlotRestriction(0, EquipmentType.Helmet);
-        SetSlotRestriction(1, EquipmentType.Chest);
-        SetSlotRestriction(2, EquipmentType.Glove);
-        SetSlotRestriction(3, EquipmentType.Trousers);
-        SetSlotRestriction(4, EquipmentType.Shoe);
-        SetSlotRestriction(5, EquipmentType.Amulet);
-        SetSlotRestriction(6, EquipmentType.Ring);
+        SetSlotRestriction(1, EquipmentType.Amulet);
+        SetSlotRestriction(2, EquipmentType.Chest);
+        SetSlotRestriction(3, EquipmentType.Glove);
+        SetSlotRestriction(4, EquipmentType.Trousers);
+        SetSlotRestriction(5, EquipmentType.Ring);
+        SetSlotRestriction(6, EquipmentType.Shoe);
         SetSlotRestriction(7, EquipmentType.Weapon);
     }
 
