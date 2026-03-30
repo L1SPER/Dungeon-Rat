@@ -16,6 +16,8 @@ public class BattleRoomCanvasUI : MonoBehaviour
     public BattleSlotUI[] EnemySlots => enemySlots;
     public List<EnemyCharacter> CurrentEnemies => currentEnemies;
 
+
+
     private void Awake()
     {
         partyManager = FindFirstObjectByType<PartyManager>();

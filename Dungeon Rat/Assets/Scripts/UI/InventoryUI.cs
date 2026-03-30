@@ -43,7 +43,7 @@ public class InventoryUI : MonoBehaviour
         for (int i = 0; i < slotUIArray.Length; i++)
         {
             InventorySlotUI newSlotUI = Instantiate(slotPrefab, slotsParent);
-            newSlotUI.Bind(inventoryObject.inventory, i, this, null);
+            newSlotUI.Bind(inventoryObject.inventory, i, this);
             slotUIArray[i] = newSlotUI;
         }
     }

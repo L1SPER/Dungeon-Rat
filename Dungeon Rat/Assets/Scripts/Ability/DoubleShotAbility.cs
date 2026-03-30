@@ -25,32 +25,18 @@ public class DoubleShotAbility : AbilityBase
         if (user == null || enemyTarget == null || battleTurnManager == null)
             return false;
 
-        List<EnemyCharacter> targets = battleTurnManager.GetEnemiesInRange(user);
-        if (targets.Count == 0)
-            return false;
-
         int damage = Mathf.RoundToInt(battleTurnManager.GetWeaponDamage(user) * damageMultiplier);
 
-        enemyTarget.TakeDamage(damage);
-        Debug.Log($"{user.name} {abilityName} ile {enemyTarget.EnemyName} hedefini vurdu. Damage: {damage}");
+        int firstDealtDamage = enemyTarget.ApplyDamage(damage);
+        Debug.Log($"{user.name} {abilityName} ile {enemyTarget.EnemyName} hedefini vurdu. Toplam hasar: {firstDealtDamage}");
 
-        EnemyCharacter secondTarget = null;
+        EnemyCharacter secondTarget = battleTurnManager.GetEnemyBehind(enemyTarget);
 
-        for (int i = 0; i < targets.Count; i++)
+        if (secondTarget != null && !secondTarget.isDead)
         {
-            if (targets[i] == null || targets[i].isDead || targets[i] == enemyTarget)
-                continue;
-
-            secondTarget = targets[i];
-            break;
+            int secondDealtDamage = secondTarget.ApplyDamage(damage);
+            Debug.Log($"{user.name} {abilityName} ile arkasındaki hedef {secondTarget.EnemyName} vurdu. Toplam hasar: {secondDealtDamage}");
         }
-
-        if (secondTarget != null)
-        {
-            secondTarget.TakeDamage(damage);
-            Debug.Log($"{user.name} {abilityName} ile ikinci hedef {secondTarget.EnemyName} vurdu. Damage: {damage}");
-        }
-
         return true;
     }
 }

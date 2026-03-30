@@ -43,6 +43,8 @@ public class BattleTurnManager : MonoBehaviour
     [SerializeField] private TMP_Text ability1ButtonText;
     [SerializeField] private TMP_Text ability2ButtonText;
 
+    [SerializeField] private BattleAbilityTooltipUI abilityTooltipUI;
+
     [Header("Battle UI")]
     [SerializeField] private BattleRoomCanvasUI battleRoomCanvasUI;
 
@@ -370,9 +372,18 @@ public class BattleTurnManager : MonoBehaviour
         Character currentCharacter = GetCurrentCharacter();
         Weapon weapon = currentCharacter != null ? currentCharacter.GetEquippedWeapon() : null;
 
-        SetAbilityButtonText(basicAttackButtonText, currentCharacter, weapon != null ? weapon.basicAttackAbility : null, "Basic Attack");
-        SetAbilityButtonText(ability1ButtonText, currentCharacter, weapon != null ? weapon.ability1 : null, "Ability 1");
-        SetAbilityButtonText(ability2ButtonText, currentCharacter, weapon != null ? weapon.ability2 : null, "Ability 2");
+        AbilityBase basicAttackAbility = weapon != null ? weapon.basicAttackAbility : null;
+        AbilityBase ability1 = weapon != null ? weapon.ability1 : null;
+        AbilityBase ability2 = weapon != null ? weapon.ability2 : null;
+
+        SetAbilityButtonText(basicAttackButtonText, currentCharacter, basicAttackAbility, "Basic Attack");
+        SetAbilityButtonText(ability1ButtonText, currentCharacter, ability1, "Ability 1");
+        SetAbilityButtonText(ability2ButtonText, currentCharacter, ability2, "Ability 2");
+
+        SetupAbilityHover(basicAttackButton, basicAttackAbility);
+        SetupAbilityHover(ability1Button, ability1);
+        SetupAbilityHover(ability2Button, ability2);
+
     }
 
     private void SetAbilityButtonText(TMP_Text textComponent, Character character, AbilityBase ability, string fallback)
@@ -756,5 +767,17 @@ public class BattleTurnManager : MonoBehaviour
     public Character GetActiveCharacter()
     {
         return GetCurrentCharacter();
+    }
+    private void SetupAbilityHover(Button button, AbilityBase ability)
+    {
+        if (button == null)
+            return;
+
+        AbilityButtonHoverUI hover = button.GetComponent<AbilityButtonHoverUI>();
+
+        if (hover == null)
+            hover = button.gameObject.AddComponent<AbilityButtonHoverUI>();
+
+        hover.Setup(ability, abilityTooltipUI);
     }
 }

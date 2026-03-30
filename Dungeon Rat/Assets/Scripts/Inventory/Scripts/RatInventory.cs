@@ -14,13 +14,13 @@ public class RatInventory : ContainerInventoryBase
         switch (this.level)
         {
             case 1:
-                Configure(5, 5, false);
-                break;
-            case 2:
                 Configure(10, 10, false);
                 break;
-            case 3:
+            case 2:
                 Configure(15, 15, false);
+                break;
+            case 3:
+                Configure(20, 20, false);
                 break;
         }
     }

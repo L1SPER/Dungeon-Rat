@@ -16,6 +16,6 @@ public class RatInventoryObject : ScriptableObject
         if (inventory == null)
             return;
 
-        inventory.SyncSlotsWithCapacity();
+        inventory.ConfigureByLevel(Mathf.Max(1, inventory.Level));
     }
 }

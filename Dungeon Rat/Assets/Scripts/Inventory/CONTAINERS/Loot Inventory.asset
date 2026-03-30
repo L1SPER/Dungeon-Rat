@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b8144e6d93f4c54b88acb4f119d0874, type: 3}
-  m_Name: Rat Inventory
-  m_EditorClassIdentifier: Assembly-CSharp::RatInventoryObject
-  id: 4
+  m_Script: {fileID: 11500000, guid: 1673f6e6eb020494688f0574e1f062f9, type: 3}
+  m_Name: Loot Inventory
+  m_EditorClassIdentifier: Assembly-CSharp::LootInventoryObject
+  id: 5
   savePath: 
-  inventoryName: Rat Inventory
+  inventoryName: Loot Inventory
   itemDatabase: {fileID: 11400000, guid: 67a8c0e206ae4994e976b30add39fef6, type: 2}
   inventory:
     slots:
@@ -48,37 +48,6 @@ MonoBehaviour:
       slotID: 4
       isOverflowSlot: 0
       allowedEquipmentType: 0
-    - item:
-        itemData: {fileID: 0}
-        amount: 0
-      slotID: 5
-      isOverflowSlot: 0
-      allowedEquipmentType: 0
-    - item:
-        itemData: {fileID: 0}
-        amount: 0
-      slotID: 6
-      isOverflowSlot: 0
-      allowedEquipmentType: 0
-    - item:
-        itemData: {fileID: 0}
-        amount: 0
-      slotID: 7
-      isOverflowSlot: 0
-      allowedEquipmentType: 0
-    - item:
-        itemData: {fileID: 0}
-        amount: 0
-      slotID: 8
-      isOverflowSlot: 0
-      allowedEquipmentType: 0
-    - item:
-        itemData: {fileID: 0}
-        amount: 0
-      slotID: 9
-      isOverflowSlot: 0
-      allowedEquipmentType: 0
-    currentCapacity: 10
-    maxCapacity: 10
+    currentCapacity: 5
+    maxCapacity: 5
     useOverflowSlots: 0
-    level: 1

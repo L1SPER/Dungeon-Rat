@@ -18,19 +18,30 @@ public class InventorySlotUI : MonoBehaviour,
     private InventoryBase ownerInventory;
     private int slotIndex = -1;
 
-    private InventoryUI ownerInventoryUI;
-    private EquipmentInventoryUI ownerEquipmentUI;
+    private InventoryUI ownerGeneralInventoryUI;
+    private EquipmentInventoryUI ownerEquipmentInventoryUI;
+    private RatInventoryUI ownerRatInventoryUI;
+    private LootInventoryUI ownerLootInventoryUI;
+
 
     public InventorySlot CurrentSlot => currentSlot;
     public int SlotIndex => slotIndex;
     public InventoryBase OwnerInventory => ownerInventory;
 
-    public void Bind(InventoryBase inventory, int index, InventoryUI inventoryUI = null, EquipmentInventoryUI equipmentUI = null)
+    public void Bind(
+        InventoryBase inventory,
+        int index,
+        InventoryUI inventoryUI = null,
+        EquipmentInventoryUI equipmentUI = null,
+        RatInventoryUI ratInventoryUI = null,
+        LootInventoryUI lootInventoryUI=null)
     {
         ownerInventory = inventory;
         slotIndex = index;
-        ownerInventoryUI = inventoryUI;
-        ownerEquipmentUI = equipmentUI;
+        ownerGeneralInventoryUI = inventoryUI;
+        ownerEquipmentInventoryUI = equipmentUI;
+        ownerRatInventoryUI = ratInventoryUI;
+        ownerLootInventoryUI = lootInventoryUI;
 
         if (ownerInventory != null && ownerInventory.IsValidIndex(index))
             currentSlot = ownerInventory.GetSlot(index);
@@ -57,10 +68,16 @@ public class InventorySlotUI : MonoBehaviour,
         iconImage.sprite = currentSlot.item.itemData.icon;
         iconImage.enabled = true;
 
-        if (currentSlot.item.itemData != null && currentSlot.item.itemData.IsStackable && currentSlot.item.amount > 1)
+        if (currentSlot.item.itemData != null &&
+            currentSlot.item.itemData.IsStackable &&
+            currentSlot.item.amount > 1)
+        {
             amountText.text = currentSlot.item.amount.ToString();
+        }
         else
+        {
             amountText.text = "";
+        }
 
         bgImage.color = GetSlotBackgroundColor();
     }
@@ -77,19 +94,14 @@ public class InventorySlotUI : MonoBehaviour,
         {
             case ItemRarity.Common:
                 return Color.white;
-
             case ItemRarity.Uncommon:
                 return Color.green;
-
             case ItemRarity.Rare:
                 return Color.blue;
-
             case ItemRarity.Epic:
-                return new Color(0.6f, 0.2f, 0.8f); // Mor
-
+                return new Color(0.6f, 0.2f, 0.8f);
             case ItemRarity.Legendary:
                 return Color.yellow;
-
             default:
                 return Color.white;
         }
@@ -110,11 +122,14 @@ public class InventorySlotUI : MonoBehaviour,
 
     public void RefreshOwnerUI()
     {
-        if (ownerInventoryUI != null)
-            ownerInventoryUI.RefreshUI();
+        if (ownerGeneralInventoryUI != null)
+            ownerGeneralInventoryUI.RefreshUI();
 
-        if (ownerEquipmentUI != null)
-            ownerEquipmentUI.RefreshUI();
+        if (ownerEquipmentInventoryUI != null)
+            ownerEquipmentInventoryUI.RefreshUI();
+
+        if (ownerRatInventoryUI != null)
+            ownerRatInventoryUI.RefreshUI();
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -149,7 +164,6 @@ public class InventorySlotUI : MonoBehaviour,
 
     public void OnDrag(PointerEventData eventData)
     {
-        // Drag icon manager Update içinde takip ediyor.
     }
 
     public void OnEndDrag(PointerEventData eventData)

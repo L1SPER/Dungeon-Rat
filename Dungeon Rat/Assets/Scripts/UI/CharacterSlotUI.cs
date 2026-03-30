@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.LowLevelPhysics2D;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
@@ -13,6 +14,10 @@ public class CharacterSlotUI : MonoBehaviour,IPointerClickHandler
     [SerializeField] private TMP_Text weaponClassNameText;
     [SerializeField] private TMP_Text weaponDamageText;
     [SerializeField] private TMP_Text slotIndexText;
+    [SerializeField] private TMP_Text healthText;
+    [SerializeField] private TMP_Text rangeText;
+
+
     [SerializeField] private Image characterImage;
 
     [Header("Slot Visual")]
@@ -84,18 +89,21 @@ public class CharacterSlotUI : MonoBehaviour,IPointerClickHandler
             weaponNameText.text = equippedWeapon.itemName;
             weaponClassNameText.text = equippedWeapon.WeaponType.ToString();
             weaponDamageText.text = $"{equippedWeapon.minDamage} - {equippedWeapon.maxDamage}";
+            rangeText.text = equippedWeapon.range.ToString();
         }
         else
         {
             weaponNameText.text = "Empty";
             weaponClassNameText.text = "-";
             weaponDamageText.text = "-";
+            rangeText.text= "1";
         }
 
 
         character.position = slotIndex;
         characterImage.sprite = GetClassSprite(character.classType);
         character.characterSprite = characterImage.sprite;
+        healthText.text=character.health.currentHealth.ToString()+" / "+ character.health.maxHealth.ToString();
 
         characterStatsUI.SetStats(character);
     }
@@ -107,7 +115,9 @@ public class CharacterSlotUI : MonoBehaviour,IPointerClickHandler
         weaponNameText.text = "-";
         weaponClassNameText.text = "-";
         weaponDamageText.text = "-";
+        rangeText.text = "-";
         slotIndexText.text = slotIndex.ToString();
+        healthText.text = "- / -";
 
         characterImage.sprite = emptySlotSprite;
     }
