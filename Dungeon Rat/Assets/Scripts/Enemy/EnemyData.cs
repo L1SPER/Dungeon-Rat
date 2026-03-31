@@ -8,7 +8,11 @@ public class EnemyData : ScriptableObject
 
     [Header("Stats")]
     public int maxHealth = 30;
+    public int maxShield = 0;
     public int damage = 10;
     public int range = 1;
     public int armor = 0;
+
+    [Header("Ability")]
+    public EnemyAbilityBase enemyAbility;
 }

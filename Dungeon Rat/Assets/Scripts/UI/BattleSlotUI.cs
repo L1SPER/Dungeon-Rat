@@ -5,10 +5,20 @@ using UnityEngine.UI;
 
 public class BattleSlotUI : MonoBehaviour
 {
+    [Header("Texts")]
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private TMP_Text shieldText;
 
+    [Header("Sliders")]
+    [SerializeField] private Slider healthSlider;
+    [SerializeField] private Slider shieldSlider;
+
+    [Header("Optional UI Roots")]
+    [SerializeField] private GameObject healthUI;
+    [SerializeField] private GameObject shieldUI;
+
+    [Header("Visuals")]
     [SerializeField] private Image unitImage;
     [SerializeField] private Button slotButton;
     [SerializeField] private GameObject selectedVisual;
@@ -22,7 +32,7 @@ public class BattleSlotUI : MonoBehaviour
 
     public Character CurrentCharacter => currentCharacter;
     public EnemyCharacter CurrentEnemy => currentEnemy;
-    public bool HasEnemy => currentEnemy != null && !currentEnemy.isDead;
+    public bool HasEnemy => currentEnemy != null && !currentEnemy.health.isDead;
     public bool HasCharacter => currentCharacter != null && currentCharacter.health != null && !currentCharacter.health.isDead;
 
     private void Awake()
@@ -36,15 +46,20 @@ public class BattleSlotUI : MonoBehaviour
         currentCharacter = character;
         currentEnemy = null;
 
-        if (character == null)
+        if (character == null || character.health == null || character.health.isDead || character.health.currentHealth <= 0)
         {
             ClearSlot();
             return;
         }
 
-        nameText.text = character.name;
-        unitImage.sprite = character.characterSprite;
-        unitImage.enabled = character.characterSprite != null;
+        if (nameText != null)
+            nameText.text = character.name;
+
+        if (unitImage != null)
+        {
+            unitImage.sprite = character.characterSprite;
+            unitImage.enabled = character.characterSprite != null;
+        }
 
         RefreshStatsUI();
 
@@ -57,15 +72,20 @@ public class BattleSlotUI : MonoBehaviour
         currentCharacter = null;
         currentEnemy = enemy;
 
-        if (enemy == null || enemy.enemyData == null || enemy.isDead)
+        if (enemy == null || enemy.enemyData == null || enemy.health.isDead || enemy.health.currentHealth <= 0)
         {
             ClearSlot();
             return;
         }
 
-        nameText.text = enemy.EnemyName;
-        unitImage.sprite = enemy.Sprite;
-        unitImage.enabled = enemy.Sprite != null;
+        if (nameText != null)
+            nameText.text = enemy.EnemyName;
+
+        if (unitImage != null)
+        {
+            unitImage.sprite = enemy.Sprite;
+            unitImage.enabled = enemy.Sprite != null;
+        }
 
         RefreshStatsUI();
 
@@ -77,28 +97,136 @@ public class BattleSlotUI : MonoBehaviour
     {
         if (currentCharacter != null)
         {
-            if (healthText != null)
-                healthText.text = $"{currentCharacter.health.currentHealth}/{currentCharacter.health.maxHealth}";
-
-            if (shieldText != null)
-                shieldText.text = $"Shield: {currentCharacter.currentShield}";
+            RefreshCharacterStatsUI();
+            return;
         }
-        else if (currentEnemy != null)
+
+        if (currentEnemy != null)
         {
-            if (healthText != null)
-                healthText.text = $"{currentEnemy.currentHealth}/{currentEnemy.MaxHealth}";
-
-            if (shieldText != null)
-                shieldText.text = $"Shield: {currentEnemy.currentShield}";
+            RefreshEnemyStatsUI();
+            return;
         }
-        else
+
+        ClearStatsUI();
+    }
+
+    private void RefreshCharacterStatsUI()
+    {
+        if (currentCharacter == null || currentCharacter.health == null)
         {
-            if (healthText != null)
-                healthText.text = "";
-
-            if (shieldText != null)
-                shieldText.text = "";
+            ClearSlot();
+            return;
         }
+
+        if (currentCharacter.health.isDead || currentCharacter.health.currentHealth <= 0)
+        {
+            ClearSlot();
+            return;
+        }
+
+        int currentHp = currentCharacter.health.currentHealth;
+        int maxHp = currentCharacter.health.maxHealth;
+
+        int currentShield = currentCharacter.shield != null ? currentCharacter.shield.currentShield : 0;
+        int maxShield = currentCharacter.shield != null ? currentCharacter.shield.maxShield : 0;
+
+        SetHealthUI(currentHp, maxHp);
+        SetShieldUI(currentShield, maxShield);
+    }
+
+    private void RefreshEnemyStatsUI()
+    {
+        if (currentEnemy == null)
+        {
+            ClearSlot();
+            return;
+        }
+
+        if (currentEnemy.health.isDead || currentEnemy.health.currentHealth <= 0)
+        {
+            ClearSlot();
+            return;
+        }
+
+        int currentHp = currentEnemy.health.currentHealth;
+        int maxHp = currentEnemy.health.maxHealth;
+
+        int currentShield = currentEnemy.shield.currentShield;
+        int maxShield = currentEnemy.shield.maxShield;
+
+        SetHealthUI(currentHp, maxHp);
+        SetShieldUI(currentShield, maxShield);
+    }
+
+    private void SetHealthUI(int current, int max)
+    {
+        max = Mathf.Max(1, max);
+        current = Mathf.Clamp(current, 0, max);
+
+        if (healthText != null)
+            healthText.text = $"{current}/{max}";
+
+        if (healthSlider != null)
+        {
+            healthSlider.minValue = 0;
+            healthSlider.maxValue = max;
+            healthSlider.value = current;
+        }
+
+        if (healthUI != null)
+            healthUI.SetActive(true);
+    }
+
+    private void SetShieldUI(int current, int max)
+    {
+        max = Mathf.Max(0, max);
+        current = Mathf.Clamp(current, 0, max);
+
+        bool showShield = max > 0 || current > 0;
+
+        if (shieldUI != null)
+            shieldUI.SetActive(showShield);
+
+        if (shieldText != null)
+            shieldText.text = showShield ? $"{current}/{max}" : "";
+
+        if (shieldSlider != null)
+        {
+            shieldSlider.minValue = 0;
+            shieldSlider.maxValue = Mathf.Max(1, max);
+            shieldSlider.value = current;
+            shieldSlider.gameObject.SetActive(showShield);
+        }
+    }
+
+    private void ClearStatsUI()
+    {
+        if (healthText != null)
+            healthText.text = "";
+
+        if (shieldText != null)
+            shieldText.text = "";
+
+        if (healthSlider != null)
+        {
+            healthSlider.minValue = 0;
+            healthSlider.maxValue = 1;
+            healthSlider.value = 0;
+        }
+
+        if (shieldSlider != null)
+        {
+            shieldSlider.minValue = 0;
+            shieldSlider.maxValue = 1;
+            shieldSlider.value = 0;
+            shieldSlider.gameObject.SetActive(false);
+        }
+
+        if (healthUI != null)
+            healthUI.SetActive(false);
+
+        if (shieldUI != null)
+            shieldUI.SetActive(false);
     }
 
     public void ClearSlot()
@@ -106,16 +234,16 @@ public class BattleSlotUI : MonoBehaviour
         currentCharacter = null;
         currentEnemy = null;
 
-        nameText.text = "";
+        if (nameText != null)
+            nameText.text = "";
 
-        if (healthText != null)
-            healthText.text = "";
+        if (unitImage != null)
+        {
+            unitImage.sprite = null;
+            unitImage.enabled = false;
+        }
 
-        if (shieldText != null)
-            shieldText.text = "";
-
-        unitImage.sprite = null;
-        unitImage.enabled = false;
+        ClearStatsUI();
 
         SetSelectable(false);
         SetSelected(false);

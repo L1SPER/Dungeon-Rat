@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -178,41 +179,76 @@ public class BattleTurnManager : MonoBehaviour
 
     private IEnumerator EnemyTurnRoutine()
     {
-        Debug.Log("Enemy turn başladı.");
+        Debug.Log("<color=yellow>Enemy turn başladı.</color>");
 
-        //List<EnemyCharacter> livingEnemies = GetLivingEnemies();
+        List<EnemyCharacter> livingEnemies = GetLivingEnemies();
 
-        //for (int i = 0; i < livingEnemies.Count; i++)
-        //{
-        //    EnemyCharacter enemy = livingEnemies[i];
-        //    if (enemy == null || enemy.isDead)
-        //        continue;
+        for (int i = 0; i < livingEnemies.Count; i++)
+        {
+            EnemyCharacter enemy = livingEnemies[i];
 
-        //    if (enemy.ConsumeOneStunTurn())
-        //    {
-        //        Debug.Log($"{enemy.EnemyName} stun olduğu için turunu pas geçti.");
-        //        continue;
-        //    }
+            if (enemy == null || enemy.health.isDead)
+                continue;
 
-        //    Character target = GetNearestLivingAlly();
-        //    if (target == null)
-        //        break;
+            if (enemy.ConsumeOneStunTurn())
+            {
+                Debug.Log($"<color=red>{enemy.EnemyName} stun olduğu için turunu pas geçti.</color>");
+                LogBattleState($"{enemy.EnemyName} turn skipped because of stun");
+                yield return new WaitForSeconds(enemyTurnDelay);
+                continue;
+            }
 
-        //    target.TakeDamage(enemy.Damage);
-        //    Debug.Log($"{enemy.EnemyName} -> {target.name} saldırdı. Damage: {enemy.Damage}");
+            if (enemy.Ability == null)
+            {
+                Debug.LogWarning($"<color=red>{enemy.EnemyName} için ability atanmadı.</color>");
+                ExecuteEnemyBasicAttack(enemy);
+                LogBattleState($"<color=red>{enemy.EnemyName} used fallback basic attack</color>");
+                yield return new WaitForSeconds(enemyTurnDelay);
+                continue;
+            }
 
-        //    yield return new WaitForSeconds(enemyTurnDelay);
-        //}
+            enemy.Ability.Execute(enemy, this);
 
-        //if (AllPlayersDead())
-        //{
-        //    Debug.Log("Tüm oyuncular öldü. Battle kaybedildi.");
-        //    yield break;
-        //}
-        yield return null;
+            if (enemy.Ability.PerformBasicAttackAfterUse)
+                ExecuteEnemyBasicAttack(enemy);
+
+            if (battleRoomCanvasUI != null)
+                battleRoomCanvasUI.RefreshAll();
+            LogBattleState($"<color=red>{enemy.EnemyName} finished action</color>");
+
+            if (AllPlayersDead())
+            {
+                Debug.Log("Tüm oyuncular öldü. Battle kaybedildi.");
+                yield break;
+            }
+
+            yield return new WaitForSeconds(enemyTurnDelay);
+        }
+
         StartPlayerPhase();
     }
+    private void ExecuteEnemyBasicAttack(EnemyCharacter enemy)
+    {
+        if (enemy == null || enemy.health.isDead)
+            return;
 
+        Character target = GetNearestLivingAllyInRange(enemy);
+        if (target == null)
+        {
+            Debug.Log($"<color=red>{enemy.EnemyName} normal saldırı için hedef bulamadı.</color>");
+            return;
+        }
+
+        int baseDamage = enemy.Damage;
+        int appliedDamage = target.ApplyDamage(baseDamage);
+
+        BattleDebugLogger.LogEnemyBasicAttack(
+            enemy.EnemyName,
+            target.name,
+            baseDamage,
+            appliedDamage
+        );
+    }
     private void StartNextAvailableCharacterTurn()
     {
         int nextIndex = FindNextAvailableCharacterIndex();
@@ -383,7 +419,6 @@ public class BattleTurnManager : MonoBehaviour
         SetupAbilityHover(basicAttackButton, basicAttackAbility);
         SetupAbilityHover(ability1Button, ability1);
         SetupAbilityHover(ability2Button, ability2);
-
     }
 
     private void SetAbilityButtonText(TMP_Text textComponent, Character character, AbilityBase ability, string fallback)
@@ -582,6 +617,7 @@ public class BattleTurnManager : MonoBehaviour
 
         if (battleRoomCanvasUI != null)
             battleRoomCanvasUI.RefreshAll();
+        LogBattleState($"{currentCharacter.name} used {usedAbility.abilityName}");
 
         UpdateTurnUI();
 
@@ -619,9 +655,13 @@ public class BattleTurnManager : MonoBehaviour
     private void EndCurrentCharacterTurn()
     {
         CharacterBattleState currentState = GetCurrentState();
+        Character currentCharacter = GetCurrentCharacter();
 
         if (currentState != null)
             currentState.turnFinished = true;
+
+        if (currentCharacter != null)
+            LogBattleState($"{currentCharacter.name} turn ended");
 
         StartNextAvailableCharacterTurn();
     }
@@ -636,7 +676,7 @@ public class BattleTurnManager : MonoBehaviour
         for (int i = 0; i < battleRoomCanvasUI.CurrentEnemies.Count; i++)
         {
             EnemyCharacter enemy = battleRoomCanvasUI.CurrentEnemies[i];
-            if (enemy == null || enemy.isDead)
+            if (enemy == null || enemy.health.isDead)
                 continue;
 
             result.Add(enemy);
@@ -690,6 +730,72 @@ public class BattleTurnManager : MonoBehaviour
         }
 
         return result;
+    }
+
+    public List<Character> GetAlliesInEnemyRange(EnemyCharacter attacker)
+    {
+        List<Character> result = new List<Character>();
+
+        if (attacker == null)
+            return result;
+
+        List<Character> livingAllies = GetLivingAllies();
+        int range = Mathf.Clamp(attacker.Range, 1, 99);
+
+        for (int i = 0; i < livingAllies.Count; i++)
+        {
+            if (i >= range)
+                break;
+
+            result.Add(livingAllies[i]);
+        }
+
+        return result;
+    }
+
+    public Character GetNearestLivingAllyInRange(EnemyCharacter attacker)
+    {
+        List<Character> targets = GetAlliesInEnemyRange(attacker);
+
+        if (targets.Count == 0)
+            return null;
+
+        return targets[0];
+    }
+
+    public Character GetRandomLivingAllyInRange(EnemyCharacter attacker)
+    {
+        List<Character> targets = GetAlliesInEnemyRange(attacker);
+
+        if (targets.Count == 0)
+            return null;
+
+        int randomIndex = Random.Range(0, targets.Count);
+        return targets[randomIndex];
+    }
+
+    public EnemyCharacter GetLowestShieldLivingEnemyAlly(EnemyCharacter source)
+    {
+        List<EnemyCharacter> livingEnemies = GetLivingEnemies();
+
+        EnemyCharacter bestTarget = null;
+        int lowestShield = int.MaxValue;
+
+        for (int i = 0; i < livingEnemies.Count; i++)
+        {
+            EnemyCharacter candidate = livingEnemies[i];
+
+            if (candidate == null || candidate.health.isDead || candidate == source)
+                continue;
+
+            if (candidate.shield.currentShield < lowestShield)
+            {
+                lowestShield = candidate.shield.currentShield;
+                bestTarget = candidate;
+            }
+        }
+
+        return bestTarget;
     }
 
     public EnemyCharacter GetEnemyBehind(EnemyCharacter targetEnemy)
@@ -768,6 +874,7 @@ public class BattleTurnManager : MonoBehaviour
     {
         return GetCurrentCharacter();
     }
+
     private void SetupAbilityHover(Button button, AbilityBase ability)
     {
         if (button == null)
@@ -779,5 +886,124 @@ public class BattleTurnManager : MonoBehaviour
             hover = button.gameObject.AddComponent<AbilityButtonHoverUI>();
 
         hover.Setup(ability, abilityTooltipUI);
+    }
+    private void LogBattleState(string context)
+    {
+        Debug.Log($"===== BATTLE STATE | {context} =====");
+
+        LogAllCharactersState();
+        LogAllEnemiesState();
+
+        Debug.Log("====================================");
+    }
+
+    private void LogAllCharactersState()
+    {
+        List<Character> allies = GetLivingAndDeadAlliesForLog();
+
+        Debug.Log("<color=lime>--- CHARACTERS ---</color>");
+
+        if (allies.Count == 0)
+        {
+            Debug.Log("<color=lime>No characters found.</color>");
+            return;
+        }
+
+        for (int i = 0; i < allies.Count; i++)
+        {
+            Character character = allies[i];
+
+            if (character == null)
+            {
+                Debug.Log($"<color=lime>Character Slot {i}: NULL</color>");
+                continue;
+            }
+
+            int currentHp = 0;
+            int maxHp = 0;
+            bool isDead = false;
+
+            if (character.health != null)
+            {
+                currentHp = character.health.currentHealth;
+                maxHp = character.health.maxHealth;
+                isDead = character.health.isDead;
+            }
+
+            int currentShield = 0;
+            int maxShield = 0;
+            if (character.shield != null)
+            {
+                currentShield = character.shield.currentShield;
+                maxShield = character.shield.maxShield;
+            }
+            Debug.Log(
+                $"<color=lime>[{i}] {character.name} | HP: {currentHp}/{maxHp} | Shield: {currentShield}/{maxShield} | Dead: {isDead}</color>"
+            );
+        }
+    }
+
+    private void LogAllEnemiesState()
+    {
+        List<EnemyCharacter> enemies = GetLivingAndDeadEnemiesForLog();
+
+        Debug.Log("<color=red>--- ENEMIES ---</color>");
+
+        if (enemies.Count == 0)
+        {
+            Debug.Log("<color=red>No enemies found.</color>");
+            return;
+        }
+
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            EnemyCharacter enemy = enemies[i];
+
+            if (enemy == null)
+            {
+                Debug.Log($"<color=red>Enemy Slot {i}: NULL</color>");
+                continue;
+            }
+
+            Debug.Log(
+                $"<color=red>[{i}] {enemy.EnemyName} | HP: {enemy.health.currentHealth}/{enemy.MaxHealth} | Shield: {enemy.shield.currentShield}/{enemy.shield.maxShield} | Dead: {enemy.health.isDead}</color>"
+            );
+        }
+    }
+
+    private List<Character> GetLivingAndDeadAlliesForLog()
+    {
+        List<Character> result = new List<Character>();
+
+        if (partyManager == null)
+            return result;
+
+        Character[] party = partyManager.GetPartyMembers();
+        if (party == null)
+            return result;
+
+        for (int i = 0; i < party.Length; i++)
+        {
+            if (party[i] != null)
+                result.Add(party[i]);
+        }
+
+        return result;
+    }
+
+    private List<EnemyCharacter> GetLivingAndDeadEnemiesForLog()
+    {
+        List<EnemyCharacter> result = new List<EnemyCharacter>();
+
+        if (battleRoomCanvasUI == null || battleRoomCanvasUI.CurrentEnemies == null)
+            return result;
+
+        for (int i = 0; i < battleRoomCanvasUI.CurrentEnemies.Count; i++)
+        {
+            if (battleRoomCanvasUI.CurrentEnemies[i] != null)
+                result.Add(battleRoomCanvasUI.CurrentEnemies[i]);
+        }
+
+        return result;
     }
 }

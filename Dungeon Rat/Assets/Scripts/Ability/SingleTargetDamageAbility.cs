@@ -31,9 +31,8 @@ public class SingleTargetDamageAbility : AbilityBase
             return false;
 
         int baseDamage = battleTurnManager.GetWeaponDamage(user);
-        int finalDamage = Mathf.RoundToInt(baseDamage * damageMultiplier) + flatBonusDamage;
-
-        enemyTarget.TakeDamage(finalDamage);
+        int calculatedDamage = Mathf.RoundToInt(baseDamage * damageMultiplier) + flatBonusDamage;
+        int appliedDamage = enemyTarget.ApplyDamage(calculatedDamage);
 
         if (armorBreakAmount > 0)
             enemyTarget.BreakArmor(armorBreakAmount);
@@ -44,7 +43,17 @@ public class SingleTargetDamageAbility : AbilityBase
         if (applySkipNextTurnToUser)
             user.ApplySkipNextTurn();
 
-        Debug.Log($"{user.name} {abilityName} kullandı. {enemyTarget.EnemyName} {finalDamage} hasar aldı.");
+        BattleDebugLogger.LogPlayerAction(
+            user.name,
+            abilityName,
+            enemyTarget.EnemyName,
+            baseDamage,
+            damageMultiplier,
+            flatBonusDamage,
+            calculatedDamage,
+            appliedDamage
+        );
+
         return true;
     }
 }

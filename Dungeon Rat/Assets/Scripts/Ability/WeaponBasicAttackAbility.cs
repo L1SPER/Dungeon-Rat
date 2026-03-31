@@ -31,12 +31,21 @@ public class WeaponBasicAttackAbility : AbilityBase
         if (weapon == null)
             return false;
 
-        int damage = battleTurnManager.GetBasicAttackDamage(user, weapon, offClassDamage);
-        damage = Mathf.RoundToInt(damage * damageMultiplier);
+        int baseDamage = battleTurnManager.GetBasicAttackDamage(user, weapon, offClassDamage);
+        int calculatedDamage = Mathf.RoundToInt(baseDamage * damageMultiplier);
+        int appliedDamage = enemyTarget.ApplyDamage(calculatedDamage);
 
-        enemyTarget.TakeDamage(damage);
+        BattleDebugLogger.LogPlayerAction(
+            user.name,
+            abilityName,
+            enemyTarget.EnemyName,
+            baseDamage,
+            damageMultiplier,
+            0,
+            calculatedDamage,
+            appliedDamage
+        );
 
-        Debug.Log($"{user.name} {abilityName} kullandı. {enemyTarget.EnemyName} {damage} hasar aldı.");
         return true;
     }
 }

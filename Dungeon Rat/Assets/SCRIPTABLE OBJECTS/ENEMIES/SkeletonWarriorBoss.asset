@@ -10,7 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cac653bdce3f6554a8ca0d6b00694cd3, type: 3}
-  m_Name: SkeletonMage
+  m_Name: SkeletonWarriorBoss
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  enemyName: Skeleton Mage
-  enemySprite: {fileID: 5273017309115647293, guid: 0f8c766c63ff59143b282cc35b0bf060, type: 3}
+  enemyName: Skeleton Warrior Boss
+  enemySprite: {fileID: 0}
+  maxHealth: 30
+  damage: 10
+  range: 1
+  armor: 0
+  enemyAbility: {fileID: 11400000, guid: f5fd5322c2671bd4395989a2ba00b52b, type: 2}

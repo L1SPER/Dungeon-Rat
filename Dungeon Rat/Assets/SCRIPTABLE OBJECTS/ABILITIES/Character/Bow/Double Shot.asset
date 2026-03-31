@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DoubleShotAbility
   abilityName: Double Shot
   icon: {fileID: 0}
-  description: "\u0130ki farkl\u0131 d\xFC\u015Fmana birer ok yollar."
+  description: "Hedefe ve arkas\u0131ndaki d\xFC\u015Fmana birer ok yollar."
   apCost: 1
   manaCost: 0
   cooldownTurns: 2

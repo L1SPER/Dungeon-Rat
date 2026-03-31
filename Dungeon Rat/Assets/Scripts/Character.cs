@@ -28,7 +28,7 @@ public class Character : IDamageable
 
     [Header("Runtime Variables")]
     public Health health = new Health();
-    public int currentShield;
+    public Shield shield = new Shield();
 
     public Character(string name, ClassType classType)
     {
@@ -68,7 +68,7 @@ public class Character : IDamageable
     {
         RecalculateStats();
         health.Initialize(finalStats.health);
-        currentShield = finalStats.shield;
+        shield.Initialize(finalStats.shield);
     }
 
     public void RecalculateStats()
@@ -85,7 +85,8 @@ public class Character : IDamageable
         if (health != null && health.maxHealth > 0)
             health.SetMaxHealth(finalStats.health);
 
-        currentShield = Mathf.Clamp(currentShield, 0, finalStats.shield);
+        if (shield != null)
+            shield.SetMaxShield(finalStats.shield);
     }
 
     public void ApplyDerivedStats()
@@ -104,13 +105,13 @@ public class Character : IDamageable
         if (finalStats.health < 1)
         {
             Debug.LogWarning($"{name} final health 1'in altına düştü: {finalStats.health}");
-            finalStats.health = 0;
+            finalStats.health = 1;
         }
 
         if (finalStats.shield < 0)
         {
             Debug.LogWarning($"{name} final shield 0'ın altına düştü: {finalStats.shield}");
-            finalStats.shield = Mathf.Clamp(finalStats.shield, 0, finalStats.shield);
+            finalStats.shield = 0;
         }
 
         if (finalStats.critChance < 0 || finalStats.critChance > 100)
@@ -191,16 +192,10 @@ public class Character : IDamageable
 
     public void RestoreShield(int amount)
     {
-        if (amount <= 0)
-        {
-            Debug.LogWarning("RestoreShield called with non-positive amount: " + amount);
+        if (shield == null)
             return;
-        }
 
-        currentShield += amount;
-
-        if (currentShield > finalStats.shield)
-            currentShield = finalStats.shield;
+        shield.Restore(amount);
     }
 
     public void TakeDamage(int damage)
@@ -210,60 +205,101 @@ public class Character : IDamageable
 
     public int ApplyDamage(int damage)
     {
-        if (health.isInvulnerable || health.isDead || damage <= 0)
+        if (health.isInvulnerable)
         {
-            Debug.LogWarning($"{name} is invulnerable, dead, or damage is non-positive. No damage taken.");
+            BattleDebugLogger.LogCharacterDamageIgnored(name, damage, "Invulnerable");
             return 0;
         }
 
+        if (health.isDead)
+        {
+            BattleDebugLogger.LogCharacterDamageIgnored(name, damage, "AlreadyDead");
+            return 0;
+        }
+
+        if (damage <= 0)
+        {
+            BattleDebugLogger.LogCharacterDamageIgnored(name, damage, "NonPositiveDamage");
+            return 0;
+        }
+
+        int rawDamage = damage;
         int incomingDamage = damage;
 
+        string firstHitReductionInfo = "none";
         if (firstHitDamageReductionActive)
         {
+            firstHitReductionInfo = $"%{firstHitDamageReductionPercent}";
             incomingDamage = Mathf.CeilToInt(incomingDamage * (100 - firstHitDamageReductionPercent) / 100f);
             firstHitDamageReductionActive = false;
         }
 
-        int reducedDmg = Mathf.Max(incomingDamage - finalStats.armor, 0);
+        int damageReductionFromArmor = finalStats.armor * 5;
+        int afterArmor = Mathf.Max(incomingDamage - damageReductionFromArmor, 0);
 
-        if (reducedDmg <= 0)
+        int shieldBefore = shield.currentShield;
+        int healthBefore = health.currentHealth;
+
+        if (afterArmor <= 0)
         {
-            Debug.Log($"{name} armor absorbed all damage. No health lost.");
+            BattleDebugLogger.LogCharacterDamage(
+                name,
+                rawDamage,
+                firstHitReductionInfo,
+                incomingDamage,
+                finalStats.armor,
+                damageReductionFromArmor,
+                afterArmor,
+                shieldBefore,
+                shield.currentShield,
+                healthBefore,
+                health.currentHealth,
+                0
+            );
+
             return 0;
         }
 
-        int beforeShield = currentShield;
-        int beforeHealth = health.currentHealth;
+        int remainingDamage = afterArmor;
 
-        int restDmg = 0;
+        if (shield.currentShield > 0)
+            remainingDamage = TakeDamageToShield(afterArmor);
 
-        if (currentShield > 0)
-            restDmg = TakeDamageToShield(reducedDmg);
-        else
-            restDmg = reducedDmg;
+        if (remainingDamage > 0)
+            health.TakeDamage(remainingDamage);
 
-        if (restDmg > 0)
-            health.TakeDamage(restDmg);
+        int shieldAfter = shield.currentShield;
+        int healthAfter = health.currentHealth;
 
-        int shieldDamage = beforeShield - currentShield;
-        int healthDamage = beforeHealth - health.currentHealth;
+        int shieldDamage = shieldBefore - shieldAfter;
+        int healthDamage = healthBefore - healthAfter;
+        int appliedDamage = shieldDamage + healthDamage;
 
-        return shieldDamage + healthDamage;
+        BattleDebugLogger.LogCharacterDamage(
+            name,
+            rawDamage,
+            firstHitReductionInfo,
+            incomingDamage,
+            finalStats.armor,
+            damageReductionFromArmor,
+            afterArmor,
+            shieldBefore,
+            shieldAfter,
+            healthBefore,
+            healthAfter,
+            appliedDamage
+        );
+
+        return appliedDamage;
     }
 
+    // Eski method adını korudum, dışarıdan çağrılıyorsa patlamasın
     public int TakeDamageToShield(int dmg)
     {
-        if (dmg <= 0)
-        {
-            Debug.LogWarning("TakeShieldDamage called with non-positive damage: " + dmg);
-            return 0;
-        }
+        if (shield == null)
+            return dmg;
 
-        int shieldAbsorb = Mathf.Min(currentShield, dmg);
-        currentShield -= shieldAbsorb;
-
-        dmg -= shieldAbsorb;
-        return dmg > 0 ? dmg : 0;
+        return shield.Absorb(dmg);
     }
 
     private bool HasCompatibleWeapon(Character character)

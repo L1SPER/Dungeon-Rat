@@ -68,7 +68,8 @@ public class PartyManager : MonoBehaviour
             case ClassType.Warrior:
                 character.baseStats.health = 100;
                 character.baseStats.armor = 0;
-                character.baseStats.shield = 0;
+                character.baseStats.shield = 5;
+                
 
                 character.baseStats.strength = 1;
                 character.baseStats.agility = 0;

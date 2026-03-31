@@ -10,7 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cac653bdce3f6554a8ca0d6b00694cd3, type: 3}
-  m_Name: SkeletonArcher
+  m_Name: SkeletonCrossbowmen
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyName: Skeleton Archer
   enemySprite: {fileID: 9041428293049349298, guid: 58dc50fd4a29a3d4cb1a461966b1d902, type: 3}
+  maxHealth: 20
+  maxShield: 0
+  damage: 12
+  range: 3
+  armor: 0
+  enemyAbility: {fileID: 11400000, guid: bdbb21dc9fb0cbb42b67bf037e944e7b, type: 2}

@@ -32,7 +32,7 @@ public class DoubleShotAbility : AbilityBase
 
         EnemyCharacter secondTarget = battleTurnManager.GetEnemyBehind(enemyTarget);
 
-        if (secondTarget != null && !secondTarget.isDead)
+        if (secondTarget != null && !secondTarget.health.isDead)
         {
             int secondDealtDamage = secondTarget.ApplyDamage(damage);
             Debug.Log($"{user.name} {abilityName} ile arkasındaki hedef {secondTarget.EnemyName} vurdu. Toplam hasar: {secondDealtDamage}");

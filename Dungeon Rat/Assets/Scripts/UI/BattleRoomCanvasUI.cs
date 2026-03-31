@@ -68,7 +68,7 @@ public class BattleRoomCanvasUI : MonoBehaviour
         for (int i = 0; i < currentEnemies.Count; i++)
         {
             EnemyCharacter enemy = currentEnemies[i];
-            if (enemy == null || enemy.isDead)
+            if (enemy == null || enemy.health.isDead)
                 continue;
 
             int slotIndex = enemy.position - 1;
