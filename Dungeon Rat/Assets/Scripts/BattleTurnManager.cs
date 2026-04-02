@@ -1,9 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class BattleTurnManager : MonoBehaviour
 {
@@ -30,29 +27,16 @@ public class BattleTurnManager : MonoBehaviour
         }
     }
 
-    [Header("UI References")]
-    [SerializeField] private TMP_Text characterNameInThatTurnText;
-    [SerializeField] private TMP_Text apText;
-    [SerializeField] private TMP_Text manaText;
-
-    [SerializeField] private Button basicAttackButton;
-    [SerializeField] private Button ability1Button;
-    [SerializeField] private Button ability2Button;
-    [SerializeField] private Button nextTurnButton;
-
-    [SerializeField] private TMP_Text basicAttackButtonText;
-    [SerializeField] private TMP_Text ability1ButtonText;
-    [SerializeField] private TMP_Text ability2ButtonText;
-
-    [SerializeField] private BattleAbilityTooltipUI abilityTooltipUI;
-
-    [Header("Battle UI")]
+    [Header("References")]
     [SerializeField] private BattleRoomCanvasUI battleRoomCanvasUI;
+    [SerializeField] private CharacterPanelBattleUI characterPanelUI;
+    [SerializeField] private DungeonRoomCanvasManager canvasManager;
 
     [Header("Settings")]
     [SerializeField] private float enemyTurnDelay = 1f;
 
     private PartyManager partyManager;
+    private EnemyPartyManager enemyPartyManager;
     private CharacterBattleState[] characterStates;
 
     private BattlePhase currentPhase;
@@ -61,25 +45,30 @@ public class BattleTurnManager : MonoBehaviour
 
     private bool isSelectingTarget = false;
     private AbilityBase pendingAbility = null;
+    private bool battleEnded = false;
 
     private void Awake()
     {
         partyManager = FindFirstObjectByType<PartyManager>();
+        enemyPartyManager = FindFirstObjectByType<EnemyPartyManager>();
+
+        if (partyManager != null)
+            partyManager.OnPartyChanged += HandlePartyChanged;
 
         if (battleRoomCanvasUI == null)
             battleRoomCanvasUI = FindFirstObjectByType<BattleRoomCanvasUI>();
 
-        if (basicAttackButton != null)
-            basicAttackButton.onClick.AddListener(OnBasicAttackClicked);
+        if (characterPanelUI == null)
+            characterPanelUI = FindFirstObjectByType<CharacterPanelBattleUI>();
 
-        if (ability1Button != null)
-            ability1Button.onClick.AddListener(OnAbility1Clicked);
+        if (canvasManager == null)
+            canvasManager = FindFirstObjectByType<DungeonRoomCanvasManager>();
+    }
 
-        if (ability2Button != null)
-            ability2Button.onClick.AddListener(OnAbility2Clicked);
-
-        if (nextTurnButton != null)
-            nextTurnButton.onClick.AddListener(OnNextTurnClicked);
+    private void OnDestroy()
+    {
+        if (partyManager != null)
+            partyManager.OnPartyChanged -= HandlePartyChanged;
     }
 
     private IEnumerator Start()
@@ -104,11 +93,20 @@ public class BattleTurnManager : MonoBehaviour
             }
         }
 
+        if (characterPanelUI != null)
+            characterPanelUI.Initialize(this);
+
         InitializeBattle();
     }
 
     public void InitializeBattle()
     {
+        battleEnded = false;
+        isSelectingTarget = false;
+        pendingAbility = null;
+        currentCharacterIndex = -1;
+        currentAP = 0;
+
         if (partyManager == null)
         {
             Debug.LogWarning("BattleTurnManager -> PartyManager bulunamadı.");
@@ -123,19 +121,153 @@ public class BattleTurnManager : MonoBehaviour
             return;
         }
 
-        characterStates = new CharacterBattleState[partyMembers.Length];
+        RebuildCharacterStates(null);
+
+        if (canvasManager != null)
+            canvasManager.ShowBattleUI();
+
+        if (battleRoomCanvasUI != null)
+            battleRoomCanvasUI.RefreshAll();
+
+        RefreshCharacterPanelUI();
+        StartPlayerPhase();
+    }
+
+    private void WinBattle()
+    {
+        if (battleEnded)
+            return;
+
+        battleEnded = true;
+        CancelCurrentSelection(false);
+        StopAllCoroutines();
+
+        Debug.Log("Tüm düşmanlar öldü. Battle kazanıldı.");
+
+        if (canvasManager != null)
+            canvasManager.ShowAfterRoomUI();
+    }
+
+    private void LoseBattle()
+    {
+        if (battleEnded)
+            return;
+
+        battleEnded = true;
+        CancelCurrentSelection(false);
+        StopAllCoroutines();
+
+        Debug.Log("Tüm oyuncular öldü. Battle kaybedildi.");
+        RefreshCharacterPanelUI();
+    }
+
+    private void HandlePartyChanged()
+    {
+        if (battleEnded)
+            return;
+
+        Character previousActiveCharacter = GetCurrentCharacter();
+
+        RebuildCharacterStates(previousActiveCharacter);
+        CancelCurrentSelection(false);
+
+        if (battleRoomCanvasUI != null)
+            battleRoomCanvasUI.RefreshAll();
+
+        if (currentPhase == BattlePhase.PlayerTurn)
+        {
+            if (partyManager != null && partyManager.AreAllDead())
+            {
+                LoseBattle();
+                return;
+            }
+
+            Character currentCharacter = GetCurrentCharacter();
+            CharacterBattleState currentState = GetCurrentState();
+
+            if (currentCharacter == null || currentState == null || currentCharacter.health.isDead || currentState.turnFinished)
+            {
+                StartNextAvailableCharacterTurn();
+                return;
+            }
+        }
+
+        UpdateTurnUI();
+    }
+
+    private void RebuildCharacterStates(Character preferredCurrentCharacter)
+    {
+        if (partyManager == null)
+            return;
+
+        Character[] partyMembers = partyManager.GetPartyMembers();
+        if (partyMembers == null)
+        {
+            characterStates = null;
+            currentCharacterIndex = -1;
+            return;
+        }
+
+        CharacterBattleState[] newStates = new CharacterBattleState[partyMembers.Length];
 
         for (int i = 0; i < partyMembers.Length; i++)
         {
-            if (partyMembers[i] != null)
-                characterStates[i] = new CharacterBattleState(partyMembers[i]);
+            Character member = partyMembers[i];
+
+            if (member == null)
+                continue;
+
+            CharacterBattleState existingState = FindStateByCharacter(member);
+            newStates[i] = existingState ?? new CharacterBattleState(member);
         }
 
-        StartPlayerPhase();
+        characterStates = newStates;
+
+        if (preferredCurrentCharacter != null)
+            currentCharacterIndex = GetStateIndexByCharacter(preferredCurrentCharacter);
+        else
+            currentCharacterIndex = -1;
+    }
+
+    private CharacterBattleState FindStateByCharacter(Character character)
+    {
+        if (characterStates == null || character == null)
+            return null;
+
+        for (int i = 0; i < characterStates.Length; i++)
+        {
+            if (characterStates[i] != null && characterStates[i].character == character)
+                return characterStates[i];
+        }
+
+        return null;
+    }
+
+    private int GetStateIndexByCharacter(Character character)
+    {
+        if (characterStates == null || character == null)
+            return -1;
+
+        for (int i = 0; i < characterStates.Length; i++)
+        {
+            if (characterStates[i] != null && characterStates[i].character == character)
+                return i;
+        }
+
+        return -1;
     }
 
     private void StartPlayerPhase()
     {
+        if (battleEnded)
+            return;
+
+        if (enemyPartyManager != null && enemyPartyManager.AreAllDead())
+        {
+            WinBattle();
+            return;
+        }
+
         currentPhase = BattlePhase.PlayerTurn;
         CancelCurrentSelection(false);
 
@@ -158,22 +290,21 @@ public class BattleTurnManager : MonoBehaviour
 
     private void StartEnemyPhase()
     {
+        if (battleEnded)
+            return;
+
+        if (enemyPartyManager != null && enemyPartyManager.AreAllDead())
+        {
+            WinBattle();
+            return;
+        }
+
         currentPhase = BattlePhase.EnemyTurn;
         currentCharacterIndex = -1;
         currentAP = 0;
         CancelCurrentSelection(false);
 
-        if (characterNameInThatTurnText != null)
-            characterNameInThatTurnText.text = "Enemy Turn";
-
-        if (apText != null)
-            apText.text = "0";
-
-        if (manaText != null)
-            manaText.text = "0";
-
-        RefreshButtons();
-        RefreshAbilityButtonTexts();
+        RefreshCharacterPanelUI();
         StartCoroutine(EnemyTurnRoutine());
     }
 
@@ -181,13 +312,18 @@ public class BattleTurnManager : MonoBehaviour
     {
         Debug.Log("<color=yellow>Enemy turn başladı.</color>");
 
-        List<EnemyCharacter> livingEnemies = GetLivingEnemies();
+        List<EnemyCharacter> livingEnemies = enemyPartyManager != null
+            ? enemyPartyManager.GetAliveMembers()
+            : new List<EnemyCharacter>();
 
         for (int i = 0; i < livingEnemies.Count; i++)
         {
+            if (battleEnded)
+                yield break;
+
             EnemyCharacter enemy = livingEnemies[i];
 
-            if (enemy == null || enemy.health.isDead)
+            if (enemy == null || enemy.health == null || enemy.health.isDead)
                 continue;
 
             if (enemy.ConsumeOneStunTurn())
@@ -214,11 +350,18 @@ public class BattleTurnManager : MonoBehaviour
 
             if (battleRoomCanvasUI != null)
                 battleRoomCanvasUI.RefreshAll();
+
             LogBattleState($"<color=red>{enemy.EnemyName} finished action</color>");
 
-            if (AllPlayersDead())
+            if (partyManager != null && partyManager.AreAllDead())
             {
-                Debug.Log("Tüm oyuncular öldü. Battle kaybedildi.");
+                LoseBattle();
+                yield break;
+            }
+
+            if (enemyPartyManager != null && enemyPartyManager.AreAllDead())
+            {
+                WinBattle();
                 yield break;
             }
 
@@ -227,12 +370,13 @@ public class BattleTurnManager : MonoBehaviour
 
         StartPlayerPhase();
     }
+
     private void ExecuteEnemyBasicAttack(EnemyCharacter enemy)
     {
-        if (enemy == null || enemy.health.isDead)
+        if (enemy == null || enemy.health == null || enemy.health.isDead)
             return;
 
-        Character target = GetNearestLivingAllyInRange(enemy);
+        Character target = partyManager != null ? partyManager.GetFrontAliveMemberInRange(enemy.Range) : null;
         if (target == null)
         {
             Debug.Log($"<color=red>{enemy.EnemyName} normal saldırı için hedef bulamadı.</color>");
@@ -249,8 +393,18 @@ public class BattleTurnManager : MonoBehaviour
             appliedDamage
         );
     }
+
     private void StartNextAvailableCharacterTurn()
     {
+        if (battleEnded)
+            return;
+
+        if (enemyPartyManager != null && enemyPartyManager.AreAllDead())
+        {
+            WinBattle();
+            return;
+        }
+
         int nextIndex = FindNextAvailableCharacterIndex();
 
         if (nextIndex == -1)
@@ -284,6 +438,9 @@ public class BattleTurnManager : MonoBehaviour
 
     private int FindNextAvailableCharacterIndex()
     {
+        if (characterStates == null)
+            return -1;
+
         for (int i = 0; i < characterStates.Length; i++)
         {
             CharacterBattleState state = characterStates[i];
@@ -329,120 +486,25 @@ public class BattleTurnManager : MonoBehaviour
 
     private void UpdateTurnUI()
     {
-        Character currentCharacter = GetCurrentCharacter();
-        CharacterBattleState currentState = GetCurrentState();
+        if (battleEnded)
+            return;
 
-        if (currentPhase != BattlePhase.PlayerTurn || currentCharacter == null || currentState == null)
+        if (enemyPartyManager != null && enemyPartyManager.AreAllDead())
         {
-            if (characterNameInThatTurnText != null)
-                characterNameInThatTurnText.text = currentPhase == BattlePhase.EnemyTurn ? "Enemy Turn" : "";
-
-            if (apText != null)
-                apText.text = "0";
-
-            if (manaText != null)
-                manaText.text = "0";
-
-            RefreshButtons();
-            RefreshAbilityButtonTexts();
+            WinBattle();
             return;
         }
-
-        if (characterNameInThatTurnText != null)
-            characterNameInThatTurnText.text = currentCharacter.name;
-
-        if (apText != null)
-            apText.text = currentAP.ToString();
-
-        if (manaText != null)
-            manaText.text = Mathf.Max(0, currentState.mana).ToString();
 
         if (battleRoomCanvasUI != null)
             battleRoomCanvasUI.RefreshAll();
 
-        RefreshButtons();
-        RefreshAbilityButtonTexts();
-
-        if (AllEnemiesDead())
-            Debug.Log("Tüm düşmanlar öldü. Battle kazanıldı.");
+        RefreshCharacterPanelUI();
     }
 
-    private void RefreshButtons()
+    private void RefreshCharacterPanelUI()
     {
-        bool isPlayerTurn = currentPhase == BattlePhase.PlayerTurn;
-        Character currentCharacter = GetCurrentCharacter();
-        Weapon weapon = currentCharacter != null ? currentCharacter.GetEquippedWeapon() : null;
-
-        bool canUseBasicAttack = false;
-        bool canUseAbility1 = false;
-        bool canUseAbility2 = false;
-
-        if (isPlayerTurn && currentCharacter != null && weapon != null && currentAP > 0)
-        {
-            canUseBasicAttack = weapon.basicAttackAbility != null && !currentCharacter.IsAbilityOnCooldown(weapon.basicAttackAbility);
-
-            canUseAbility1 = weapon.ability1 != null
-                             && HasCompatibleWeapon(currentCharacter)
-                             && !currentCharacter.IsAbilityOnCooldown(weapon.ability1);
-
-            canUseAbility2 = weapon.ability2 != null
-                             && HasCompatibleWeapon(currentCharacter)
-                             && !currentCharacter.IsAbilityOnCooldown(weapon.ability2);
-        }
-
-        if (basicAttackButton != null)
-            basicAttackButton.interactable = canUseBasicAttack;
-
-        if (ability1Button != null)
-            ability1Button.interactable = canUseAbility1;
-
-        if (ability2Button != null)
-            ability2Button.interactable = canUseAbility2;
-
-        if (nextTurnButton != null)
-            nextTurnButton.interactable = isPlayerTurn;
-    }
-
-    private void RefreshAbilityButtonTexts()
-    {
-        Character currentCharacter = GetCurrentCharacter();
-        Weapon weapon = currentCharacter != null ? currentCharacter.GetEquippedWeapon() : null;
-
-        AbilityBase basicAttackAbility = weapon != null ? weapon.basicAttackAbility : null;
-        AbilityBase ability1 = weapon != null ? weapon.ability1 : null;
-        AbilityBase ability2 = weapon != null ? weapon.ability2 : null;
-
-        SetAbilityButtonText(basicAttackButtonText, currentCharacter, basicAttackAbility, "Basic Attack");
-        SetAbilityButtonText(ability1ButtonText, currentCharacter, ability1, "Ability 1");
-        SetAbilityButtonText(ability2ButtonText, currentCharacter, ability2, "Ability 2");
-
-        SetupAbilityHover(basicAttackButton, basicAttackAbility);
-        SetupAbilityHover(ability1Button, ability1);
-        SetupAbilityHover(ability2Button, ability2);
-    }
-
-    private void SetAbilityButtonText(TMP_Text textComponent, Character character, AbilityBase ability, string fallback)
-    {
-        if (textComponent == null)
-            return;
-
-        if (ability == null)
-        {
-            textComponent.text = fallback;
-            return;
-        }
-
-        string text = ability.abilityName;
-
-        if (character != null && character.IsAbilityOnCooldown(ability))
-        {
-            int remaining = character.GetAbilityCooldownRemaining(ability);
-            textComponent.text = $"{ability.abilityName} ({remaining})";
-        }
-        else
-        {
-            textComponent.text = fallback;
-        }
+        if (characterPanelUI != null)
+            characterPanelUI.RefreshUI(this);
     }
 
     private bool HasCompatibleWeapon(Character character)
@@ -504,6 +566,9 @@ public class BattleTurnManager : MonoBehaviour
 
     private void ToggleAbilitySelection(AbilityBase ability)
     {
+        if (battleEnded)
+            return;
+
         if (currentPhase != BattlePhase.PlayerTurn)
             return;
 
@@ -570,10 +635,15 @@ public class BattleTurnManager : MonoBehaviour
             List<Character> validAllyTargets = ability.GetValidAllyTargets(currentCharacter, this);
             battleRoomCanvasUI.EnableAllySelections(validAllyTargets);
         }
+
+        RefreshCharacterPanelUI();
     }
 
     private void OnSlotClicked(BattleSlotUI clickedSlot)
     {
+        if (battleEnded)
+            return;
+
         if (!isSelectingTarget || pendingAbility == null || clickedSlot == null)
             return;
 
@@ -596,6 +666,9 @@ public class BattleTurnManager : MonoBehaviour
 
     private void SpendAbilityCost(AbilityBase usedAbility)
     {
+        if (battleEnded)
+            return;
+
         CharacterBattleState currentState = GetCurrentState();
         Character currentCharacter = GetCurrentCharacter();
 
@@ -617,13 +690,17 @@ public class BattleTurnManager : MonoBehaviour
 
         if (battleRoomCanvasUI != null)
             battleRoomCanvasUI.RefreshAll();
+
         LogBattleState($"{currentCharacter.name} used {usedAbility.abilityName}");
 
         UpdateTurnUI();
 
-        if (AllEnemiesDead())
+        if (battleEnded)
+            return;
+
+        if (enemyPartyManager != null && enemyPartyManager.AreAllDead())
         {
-            Debug.Log("Tüm düşmanlar öldü. Battle kazanıldı.");
+            WinBattle();
             return;
         }
 
@@ -645,6 +722,9 @@ public class BattleTurnManager : MonoBehaviour
 
     public void OnNextTurnClicked()
     {
+        if (battleEnded)
+            return;
+
         if (currentPhase != BattlePhase.PlayerTurn)
             return;
 
@@ -654,6 +734,9 @@ public class BattleTurnManager : MonoBehaviour
 
     private void EndCurrentCharacterTurn()
     {
+        if (battleEnded)
+            return;
+
         CharacterBattleState currentState = GetCurrentState();
         Character currentCharacter = GetCurrentCharacter();
 
@@ -668,155 +751,64 @@ public class BattleTurnManager : MonoBehaviour
 
     public List<EnemyCharacter> GetLivingEnemies()
     {
-        List<EnemyCharacter> result = new List<EnemyCharacter>();
-
-        if (battleRoomCanvasUI == null || battleRoomCanvasUI.CurrentEnemies == null)
-            return result;
-
-        for (int i = 0; i < battleRoomCanvasUI.CurrentEnemies.Count; i++)
-        {
-            EnemyCharacter enemy = battleRoomCanvasUI.CurrentEnemies[i];
-            if (enemy == null || enemy.health.isDead)
-                continue;
-
-            result.Add(enemy);
-        }
-
-        return result;
+        return enemyPartyManager != null ? enemyPartyManager.GetAliveMembers() : new List<EnemyCharacter>();
     }
 
     public List<Character> GetLivingAllies()
     {
-        List<Character> result = new List<Character>();
-
-        if (partyManager == null)
-            return result;
-
-        Character[] party = partyManager.GetPartyMembers();
-        if (party == null)
-            return result;
-
-        for (int i = 0; i < party.Length; i++)
-        {
-            if (party[i] == null || party[i].health == null || party[i].health.isDead)
-                continue;
-
-            result.Add(party[i]);
-        }
-
-        return result;
+        return partyManager != null ? partyManager.GetAliveMembers() : new List<Character>();
     }
 
     public List<EnemyCharacter> GetEnemiesInRange(Character attacker)
     {
         List<EnemyCharacter> result = new List<EnemyCharacter>();
 
-        if (attacker == null)
+        if (attacker == null || enemyPartyManager == null)
             return result;
 
         Weapon weapon = attacker.GetEquippedWeapon();
         if (weapon == null)
             return result;
 
-        List<EnemyCharacter> livingEnemies = GetLivingEnemies();
-        int range = Mathf.Clamp(weapon.range, 1, 99);
-
-        for (int i = 0; i < livingEnemies.Count; i++)
-        {
-            if (i >= range)
-                break;
-
-            result.Add(livingEnemies[i]);
-        }
-
-        return result;
+        return enemyPartyManager.GetAliveMembersInRange(weapon.range);
     }
 
     public List<Character> GetAlliesInEnemyRange(EnemyCharacter attacker)
     {
-        List<Character> result = new List<Character>();
+        if (attacker == null || partyManager == null)
+            return new List<Character>();
 
-        if (attacker == null)
-            return result;
-
-        List<Character> livingAllies = GetLivingAllies();
-        int range = Mathf.Clamp(attacker.Range, 1, 99);
-
-        for (int i = 0; i < livingAllies.Count; i++)
-        {
-            if (i >= range)
-                break;
-
-            result.Add(livingAllies[i]);
-        }
-
-        return result;
+        return partyManager.GetAliveMembersInRange(attacker.Range);
     }
 
     public Character GetNearestLivingAllyInRange(EnemyCharacter attacker)
     {
-        List<Character> targets = GetAlliesInEnemyRange(attacker);
-
-        if (targets.Count == 0)
+        if (attacker == null || partyManager == null)
             return null;
 
-        return targets[0];
+        return partyManager.GetFrontAliveMemberInRange(attacker.Range);
     }
 
     public Character GetRandomLivingAllyInRange(EnemyCharacter attacker)
     {
-        List<Character> targets = GetAlliesInEnemyRange(attacker);
-
-        if (targets.Count == 0)
+        if (attacker == null || partyManager == null)
             return null;
 
-        int randomIndex = Random.Range(0, targets.Count);
-        return targets[randomIndex];
+        return partyManager.GetRandomAliveMemberInRange(attacker.Range);
     }
 
     public EnemyCharacter GetLowestShieldLivingEnemyAlly(EnemyCharacter source)
     {
-        List<EnemyCharacter> livingEnemies = GetLivingEnemies();
-
-        EnemyCharacter bestTarget = null;
-        int lowestShield = int.MaxValue;
-
-        for (int i = 0; i < livingEnemies.Count; i++)
-        {
-            EnemyCharacter candidate = livingEnemies[i];
-
-            if (candidate == null || candidate.health.isDead || candidate == source)
-                continue;
-
-            if (candidate.shield.currentShield < lowestShield)
-            {
-                lowestShield = candidate.shield.currentShield;
-                bestTarget = candidate;
-            }
-        }
-
-        return bestTarget;
+        return enemyPartyManager != null
+            ? enemyPartyManager.GetLowestShieldAliveMemberExcept(source)
+            : null;
     }
 
     public EnemyCharacter GetEnemyBehind(EnemyCharacter targetEnemy)
     {
-        if (targetEnemy == null)
-            return null;
-
-        List<EnemyCharacter> livingEnemies = GetLivingEnemies();
-
-        for (int i = 0; i < livingEnemies.Count; i++)
-        {
-            if (livingEnemies[i] == targetEnemy)
-            {
-                if (i + 1 < livingEnemies.Count)
-                    return livingEnemies[i + 1];
-
-                return null;
-            }
-        }
-
-        return null;
+        return enemyPartyManager != null
+            ? enemyPartyManager.GetEnemyBehind(targetEnemy)
+            : null;
     }
 
     public int GetWeaponDamage(Character attacker)
@@ -838,27 +830,6 @@ public class BattleTurnManager : MonoBehaviour
         return offClassDamage;
     }
 
-    private Character GetNearestLivingAlly()
-    {
-        List<Character> allies = GetLivingAllies();
-        if (allies.Count == 0)
-            return null;
-
-        return allies[0];
-    }
-
-    private bool AllEnemiesDead()
-    {
-        List<EnemyCharacter> enemies = GetLivingEnemies();
-        return enemies.Count == 0;
-    }
-
-    private bool AllPlayersDead()
-    {
-        List<Character> allies = GetLivingAllies();
-        return allies.Count == 0;
-    }
-
     public int GetCurrentMana()
     {
         CharacterBattleState currentState = GetCurrentState();
@@ -875,18 +846,142 @@ public class BattleTurnManager : MonoBehaviour
         return GetCurrentCharacter();
     }
 
-    private void SetupAbilityHover(Button button, AbilityBase ability)
+    public bool IsBattleEnded()
     {
-        if (button == null)
-            return;
-
-        AbilityButtonHoverUI hover = button.GetComponent<AbilityButtonHoverUI>();
-
-        if (hover == null)
-            hover = button.gameObject.AddComponent<AbilityButtonHoverUI>();
-
-        hover.Setup(ability, abilityTooltipUI);
+        return battleEnded;
     }
+
+    public bool IsPlayerTurn()
+    {
+        return currentPhase == BattlePhase.PlayerTurn && !battleEnded;
+    }
+
+    public string GetTurnNameForUI()
+    {
+        if (battleEnded)
+            return "";
+
+        Character currentCharacter = GetCurrentCharacter();
+
+        if (currentPhase == BattlePhase.EnemyTurn)
+            return "Enemy Turn";
+
+        return currentCharacter != null ? currentCharacter.name : "";
+    }
+
+    public int GetDisplayedAP()
+    {
+        if (battleEnded)
+            return 0;
+
+        return currentPhase == BattlePhase.PlayerTurn ? currentAP : 0;
+    }
+
+    public int GetDisplayedMana()
+    {
+        if (battleEnded)
+            return 0;
+
+        CharacterBattleState currentState = GetCurrentState();
+        if (currentPhase != BattlePhase.PlayerTurn || currentState == null)
+            return 0;
+
+        return Mathf.Max(0, currentState.mana);
+    }
+
+    public AbilityBase GetCurrentBasicAttackAbility()
+    {
+        Character currentCharacter = GetCurrentCharacter();
+        Weapon weapon = currentCharacter != null ? currentCharacter.GetEquippedWeapon() : null;
+        return weapon != null ? weapon.basicAttackAbility : null;
+    }
+
+    public AbilityBase GetCurrentAbility1()
+    {
+        Character currentCharacter = GetCurrentCharacter();
+        Weapon weapon = currentCharacter != null ? currentCharacter.GetEquippedWeapon() : null;
+        return weapon != null ? weapon.ability1 : null;
+    }
+
+    public AbilityBase GetCurrentAbility2()
+    {
+        Character currentCharacter = GetCurrentCharacter();
+        Weapon weapon = currentCharacter != null ? currentCharacter.GetEquippedWeapon() : null;
+        return weapon != null ? weapon.ability2 : null;
+    }
+
+    public string GetAbilityButtonText(AbilityBase ability, string fallback)
+    {
+        Character currentCharacter = GetCurrentCharacter();
+
+        if (ability == null)
+            return fallback;
+
+        if (currentCharacter != null && currentCharacter.IsAbilityOnCooldown(ability))
+        {
+            int remaining = currentCharacter.GetAbilityCooldownRemaining(ability);
+            return $"{ability.abilityName} ({remaining})";
+        }
+
+        return ability.abilityName;
+    }
+
+    public bool CanUseCurrentBasicAttack()
+    {
+        Character currentCharacter = GetCurrentCharacter();
+        Weapon weapon = currentCharacter != null ? currentCharacter.GetEquippedWeapon() : null;
+
+        return IsPlayerTurn()
+               && currentCharacter != null
+               && weapon != null
+               && currentAP > 0
+               && weapon.basicAttackAbility != null
+               && !currentCharacter.IsAbilityOnCooldown(weapon.basicAttackAbility);
+    }
+
+    public bool CanUseCurrentAbility1()
+    {
+        Character currentCharacter = GetCurrentCharacter();
+        Weapon weapon = currentCharacter != null ? currentCharacter.GetEquippedWeapon() : null;
+
+        return IsPlayerTurn()
+               && currentCharacter != null
+               && weapon != null
+               && currentAP > 0
+               && weapon.ability1 != null
+               && HasCompatibleWeapon(currentCharacter)
+               && !currentCharacter.IsAbilityOnCooldown(weapon.ability1);
+    }
+
+    public bool CanUseCurrentAbility2()
+    {
+        Character currentCharacter = GetCurrentCharacter();
+        Weapon weapon = currentCharacter != null ? currentCharacter.GetEquippedWeapon() : null;
+
+        return IsPlayerTurn()
+               && currentCharacter != null
+               && weapon != null
+               && currentAP > 0
+               && weapon.ability2 != null
+               && HasCompatibleWeapon(currentCharacter)
+               && !currentCharacter.IsAbilityOnCooldown(weapon.ability2);
+    }
+
+    public bool CanUseNextTurnButton()
+    {
+        return IsPlayerTurn();
+    }
+
+    public AbilityBase GetPendingAbility()
+    {
+        return pendingAbility;
+    }
+
+    public bool IsSelectingTarget()
+    {
+        return isSelectingTarget;
+    }
+
     private void LogBattleState(string context)
     {
         Debug.Log($"===== BATTLE STATE | {context} =====");
@@ -899,7 +994,9 @@ public class BattleTurnManager : MonoBehaviour
 
     private void LogAllCharactersState()
     {
-        List<Character> allies = GetLivingAndDeadAlliesForLog();
+        List<Character> allies = partyManager != null
+            ? partyManager.GetAllMembersForLog()
+            : new List<Character>();
 
         Debug.Log("<color=lime>--- CHARACTERS ---</color>");
 
@@ -937,6 +1034,7 @@ public class BattleTurnManager : MonoBehaviour
                 currentShield = character.shield.currentShield;
                 maxShield = character.shield.maxShield;
             }
+
             Debug.Log(
                 $"<color=lime>[{i}] {character.name} | HP: {currentHp}/{maxHp} | Shield: {currentShield}/{maxShield} | Dead: {isDead}</color>"
             );
@@ -945,7 +1043,9 @@ public class BattleTurnManager : MonoBehaviour
 
     private void LogAllEnemiesState()
     {
-        List<EnemyCharacter> enemies = GetLivingAndDeadEnemiesForLog();
+        List<EnemyCharacter> enemies = enemyPartyManager != null
+            ? enemyPartyManager.GetAllMembersForLog()
+            : new List<EnemyCharacter>();
 
         Debug.Log("<color=red>--- ENEMIES ---</color>");
 
@@ -965,45 +1065,29 @@ public class BattleTurnManager : MonoBehaviour
                 continue;
             }
 
+            int currentHp = 0;
+            int maxHp = 0;
+            bool isDead = false;
+
+            if (enemy.health != null)
+            {
+                currentHp = enemy.health.currentHealth;
+                maxHp = enemy.health.maxHealth;
+                isDead = enemy.health.isDead;
+            }
+
+            int currentShield = 0;
+            int maxShield = 0;
+
+            if (enemy.shield != null)
+            {
+                currentShield = enemy.shield.currentShield;
+                maxShield = enemy.shield.maxShield;
+            }
+
             Debug.Log(
-                $"<color=red>[{i}] {enemy.EnemyName} | HP: {enemy.health.currentHealth}/{enemy.MaxHealth} | Shield: {enemy.shield.currentShield}/{enemy.shield.maxShield} | Dead: {enemy.health.isDead}</color>"
+                $"<color=red>[{i}] {enemy.EnemyName} | HP: {currentHp}/{maxHp} | Shield: {currentShield}/{maxShield} | Dead: {isDead}</color>"
             );
         }
-    }
-
-    private List<Character> GetLivingAndDeadAlliesForLog()
-    {
-        List<Character> result = new List<Character>();
-
-        if (partyManager == null)
-            return result;
-
-        Character[] party = partyManager.GetPartyMembers();
-        if (party == null)
-            return result;
-
-        for (int i = 0; i < party.Length; i++)
-        {
-            if (party[i] != null)
-                result.Add(party[i]);
-        }
-
-        return result;
-    }
-
-    private List<EnemyCharacter> GetLivingAndDeadEnemiesForLog()
-    {
-        List<EnemyCharacter> result = new List<EnemyCharacter>();
-
-        if (battleRoomCanvasUI == null || battleRoomCanvasUI.CurrentEnemies == null)
-            return result;
-
-        for (int i = 0; i < battleRoomCanvasUI.CurrentEnemies.Count; i++)
-        {
-            if (battleRoomCanvasUI.CurrentEnemies[i] != null)
-                result.Add(battleRoomCanvasUI.CurrentEnemies[i]);
-        }
-
-        return result;
     }
 }

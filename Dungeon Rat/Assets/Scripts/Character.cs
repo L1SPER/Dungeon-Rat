@@ -49,23 +49,63 @@ public class Character : IDamageable
         this.name = name;
         this.classType = classType;
         this.position = position;
-        this.characterInventoryObject = inventoryObject;
+        SetInventory(inventoryObject);
     }
 
     public Character(string name, ClassType classType, EquipmentInventoryObject inventoryObject)
     {
         this.name = name;
         this.classType = classType;
-        this.characterInventoryObject = inventoryObject;
+        SetInventory(inventoryObject);
     }
 
     public void SetInventory(EquipmentInventoryObject inventoryObject)
     {
         characterInventoryObject = inventoryObject;
+        characterInventoryObject?.BindOwner(this);
+    }
+
+    public void RefreshEquipmentBonusStatsFromInventory()
+    {
+        Stats calculatedItemStats = new Stats();
+
+        if (characterInventoryObject != null && characterInventoryObject.inventory != null)
+        {
+            EquipmentInventory equipmentInventory = characterInventoryObject.inventory;
+            equipmentInventory.ConfigureDefaultRestrictions();
+
+            InventorySlot[] slots = equipmentInventory.Slots;
+            if (slots != null)
+            {
+                for (int i = 0; i < slots.Length; i++)
+                {
+                    InventorySlot slot = slots[i];
+                    if (slot == null || slot.IsEmpty())
+                        continue;
+
+                    EquipmentItemData equippedItem = slot.item.itemData as EquipmentItemData;
+                    if (equippedItem == null)
+                        continue;
+
+                    if (equippedItem.bonusStats != null)
+                        calculatedItemStats.Add(equippedItem.bonusStats);
+
+                    Weapon weapon = equippedItem as Weapon;
+                    if (weapon != null)
+                    {
+                        calculatedItemStats.minDamage += weapon.minDamage;
+                        calculatedItemStats.maxDamage += weapon.maxDamage;
+                    }
+                }
+            }
+        }
+
+        SetItemBonusStats(calculatedItemStats);
     }
 
     public void Initialize()
     {
+        RefreshEquipmentBonusStatsFromInventory();
         RecalculateStats();
         health.Initialize(finalStats.health);
         shield.Initialize(finalStats.shield);
@@ -218,88 +258,27 @@ public class Character : IDamageable
         }
 
         if (damage <= 0)
-        {
-            BattleDebugLogger.LogCharacterDamageIgnored(name, damage, "NonPositiveDamage");
             return 0;
-        }
 
-        int rawDamage = damage;
-        int incomingDamage = damage;
-
-        string firstHitReductionInfo = "none";
         if (firstHitDamageReductionActive)
         {
-            firstHitReductionInfo = $"%{firstHitDamageReductionPercent}";
-            incomingDamage = Mathf.CeilToInt(incomingDamage * (100 - firstHitDamageReductionPercent) / 100f);
+            damage = Mathf.RoundToInt(damage * (1f - firstHitDamageReductionPercent / 100f));
             firstHitDamageReductionActive = false;
         }
 
-        int damageReductionFromArmor = finalStats.armor * 5;
-        int afterArmor = Mathf.Max(incomingDamage - damageReductionFromArmor, 0);
+        int remainingAfterShield = ApplyDamageToShield(damage);
+        if (remainingAfterShield > 0)
+            health.TakeDamage(remainingAfterShield);
 
-        int shieldBefore = shield.currentShield;
-        int healthBefore = health.currentHealth;
-
-        if (afterArmor <= 0)
-        {
-            BattleDebugLogger.LogCharacterDamage(
-                name,
-                rawDamage,
-                firstHitReductionInfo,
-                incomingDamage,
-                finalStats.armor,
-                damageReductionFromArmor,
-                afterArmor,
-                shieldBefore,
-                shield.currentShield,
-                healthBefore,
-                health.currentHealth,
-                0
-            );
-
-            return 0;
-        }
-
-        int remainingDamage = afterArmor;
-
-        if (shield.currentShield > 0)
-            remainingDamage = TakeDamageToShield(afterArmor);
-
-        if (remainingDamage > 0)
-            health.TakeDamage(remainingDamage);
-
-        int shieldAfter = shield.currentShield;
-        int healthAfter = health.currentHealth;
-
-        int shieldDamage = shieldBefore - shieldAfter;
-        int healthDamage = healthBefore - healthAfter;
-        int appliedDamage = shieldDamage + healthDamage;
-
-        BattleDebugLogger.LogCharacterDamage(
-            name,
-            rawDamage,
-            firstHitReductionInfo,
-            incomingDamage,
-            finalStats.armor,
-            damageReductionFromArmor,
-            afterArmor,
-            shieldBefore,
-            shieldAfter,
-            healthBefore,
-            healthAfter,
-            appliedDamage
-        );
-
-        return appliedDamage;
+        return damage;
     }
 
-    // Eski method adını korudum, dışarıdan çağrılıyorsa patlamasın
-    public int TakeDamageToShield(int dmg)
+    private int ApplyDamageToShield(int damage)
     {
-        if (shield == null)
-            return dmg;
+        if (shield == null || shield.currentShield <= 0)
+            return damage;
 
-        return shield.Absorb(dmg);
+        return shield.Absorb(damage);
     }
 
     private bool HasCompatibleWeapon(Character character)
@@ -383,6 +362,19 @@ public class Character : IDamageable
         abilityCooldowns[ability] = ability.cooldownTurns;
     }
 
+    public void ReduceCooldownsAtTurnStart()
+    {
+        if (abilityCooldowns.Count == 0)
+            return;
+
+        List<AbilityBase> keys = new List<AbilityBase>(abilityCooldowns.Keys);
+
+        for (int i = 0; i < keys.Count; i++)
+        {
+            AbilityBase ability = keys[i];
+            abilityCooldowns[ability] = Mathf.Max(0, abilityCooldowns[ability] - 1);
+        }
+    }
     public void ReduceAbilityCooldowns()
     {
         if (abilityCooldowns.Count == 0)
@@ -393,10 +385,7 @@ public class Character : IDamageable
         for (int i = 0; i < keys.Count; i++)
         {
             AbilityBase ability = keys[i];
-            abilityCooldowns[ability]--;
-
-            if (abilityCooldowns[ability] <= 0)
-                abilityCooldowns[ability] = 0;
+            abilityCooldowns[ability] = Mathf.Max(0, abilityCooldowns[ability] - 1);
         }
     }
 }

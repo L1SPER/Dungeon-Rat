@@ -13,15 +13,14 @@ public static class InventoryTransferUtility
         if (!CanSlotAcceptItem(toSlot, movingItemData))
             return false;
 
-        // Hedef boşsa direkt taşı
         if (toSlot.IsEmpty())
         {
             toSlot.SetItem(fromSlot.item);
             fromSlot.ClearSlot();
+            NotifyChangedInventories(fromSlot, toSlot);
             return true;
         }
 
-        // Aynı itemse merge dene
         if (toSlot.CanStackWith(movingItemData))
         {
             int space = toSlot.RemainingStackSpace();
@@ -30,11 +29,11 @@ public static class InventoryTransferUtility
                 int moveAmount = System.Math.Min(space, fromSlot.item.amount);
                 toSlot.AddAmount(moveAmount);
                 fromSlot.RemoveAmount(moveAmount);
+                NotifyChangedInventories(fromSlot, toSlot);
                 return true;
             }
         }
 
-        // Swap dene
         Item targetItemCopy = new Item(toSlot.item);
 
         if (!CanSlotAcceptItem(fromSlot, targetItemCopy.itemData))
@@ -42,6 +41,7 @@ public static class InventoryTransferUtility
 
         toSlot.SetItem(fromSlot.item);
         fromSlot.SetItem(targetItemCopy);
+        NotifyChangedInventories(fromSlot, toSlot);
         return true;
     }
 
@@ -52,7 +52,6 @@ public static class InventoryTransferUtility
 
         ItemData movingItemData = fromSlot.item.itemData;
 
-        //Ilk bos stack
         if (movingItemData.IsStackable)
         {
             for (int i = 0; i < targetInventory.Slots.Length; i++)
@@ -68,7 +67,6 @@ public static class InventoryTransferUtility
             }
         }
 
-        // Sonra boş slot
         for (int i = 0; i < targetInventory.Slots.Length; i++)
         {
             InventorySlot targetSlot = targetInventory.Slots[i];
@@ -96,5 +94,17 @@ public static class InventoryTransferUtility
             return true;
 
         return slot.CanPlaceItem(itemData, slot.isOverflowSlot);
+    }
+
+    private static void NotifyChangedInventories(InventorySlot fromSlot, InventorySlot toSlot)
+    {
+        InventoryBase fromInventory = fromSlot != null ? fromSlot.OwnerInventory : null;
+        InventoryBase toInventory = toSlot != null ? toSlot.OwnerInventory : null;
+
+        if (fromInventory != null)
+            fromInventory.NotifyInventoryChanged();
+
+        if (toInventory != null && toInventory != fromInventory)
+            toInventory.NotifyInventoryChanged();
     }
 }

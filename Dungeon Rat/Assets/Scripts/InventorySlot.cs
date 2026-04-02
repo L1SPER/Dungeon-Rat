@@ -8,15 +8,24 @@ public class InventorySlot
     public int slotID;
     public bool isOverflowSlot;
 
+    [System.NonSerialized] private InventoryBase ownerInventory;
+    public InventoryBase OwnerInventory => ownerInventory;
+
     [Header("Restrictions")]
     [SerializeField] private EquipmentType allowedEquipmentType = EquipmentType.None;
     public EquipmentType AllowedEquipmentType => allowedEquipmentType;
+
     public InventorySlot()
     {
         item = new Item();
         slotID = -1;
         isOverflowSlot = false;
         allowedEquipmentType = EquipmentType.None;
+    }
+
+    public void SetOwnerInventory(InventoryBase owner)
+    {
+        ownerInventory = owner;
     }
 
     public bool IsEmpty()
@@ -57,7 +66,7 @@ public class InventorySlot
     {
         item = new Item();
     }
-    
+
     public bool CanStackWith(ItemData itemData)
     {
         if (itemData == null)
@@ -102,5 +111,4 @@ public class InventorySlot
     {
         allowedEquipmentType = equipmentType;
     }
-
 }

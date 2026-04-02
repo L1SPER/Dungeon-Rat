@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public class PartyManager : MonoBehaviour
 {
@@ -7,6 +8,8 @@ public class PartyManager : MonoBehaviour
 
     [SerializeField] private EquipmentInventoryObject[] characterInventoryObject = new EquipmentInventoryObject[3];
     [SerializeField] private EquipmentItemData[] weapons = new EquipmentItemData[3];
+
+    public event Action OnPartyChanged;
 
     private void Start()
     {
@@ -18,23 +21,9 @@ public class PartyManager : MonoBehaviour
         if (!IsPartyEmpty())
             return;
 
-        Character warrior = new Character(
-            "Borin",
-            ClassType.Warrior,
-            characterInventoryObject[0]
-        );
-
-        Character archer = new Character(
-            "Lira",
-            ClassType.Archer,
-            characterInventoryObject[1]
-        );
-
-        Character mage = new Character(
-            "Mira",
-            ClassType.Mage,
-            characterInventoryObject[2]
-        );
+        Character warrior = new Character("Borin", ClassType.Warrior, characterInventoryObject[0]);
+        Character archer = new Character("Lira", ClassType.Archer, characterInventoryObject[1]);
+        Character mage = new Character("Mira", ClassType.Mage, characterInventoryObject[2]);
 
         ApplyStartingBaseStats(warrior);
         ApplyStartingBaseStats(archer);
@@ -54,6 +43,7 @@ public class PartyManager : MonoBehaviour
 
         Debug.Log("Starting party is created!");
         PrintParty();
+        OnPartyChanged?.Invoke();
     }
 
     private void ApplyStartingBaseStats(Character character)
@@ -69,15 +59,11 @@ public class PartyManager : MonoBehaviour
                 character.baseStats.health = 100;
                 character.baseStats.armor = 0;
                 character.baseStats.shield = 5;
-                
-
                 character.baseStats.strength = 1;
                 character.baseStats.agility = 0;
                 character.baseStats.intelligence = 0;
-
                 character.baseStats.minDamage = 3;
                 character.baseStats.maxDamage = 5;
-
                 character.baseStats.critChance = 0;
                 character.baseStats.critDamage = 0;
                 break;
@@ -86,14 +72,11 @@ public class PartyManager : MonoBehaviour
                 character.baseStats.health = 90;
                 character.baseStats.armor = 0;
                 character.baseStats.shield = 0;
-
                 character.baseStats.strength = 0;
                 character.baseStats.agility = 1;
                 character.baseStats.intelligence = 0;
-
                 character.baseStats.minDamage = 2;
                 character.baseStats.maxDamage = 4;
-
                 character.baseStats.critChance = 0;
                 character.baseStats.critDamage = 0;
                 break;
@@ -102,14 +85,11 @@ public class PartyManager : MonoBehaviour
                 character.baseStats.health = 80;
                 character.baseStats.armor = 0;
                 character.baseStats.shield = 0;
-
                 character.baseStats.strength = 0;
                 character.baseStats.agility = 0;
                 character.baseStats.intelligence = 1;
-
                 character.baseStats.minDamage = 1;
                 character.baseStats.maxDamage = 3;
-
                 character.baseStats.critChance = 0;
                 character.baseStats.critDamage = 0;
                 break;
@@ -131,7 +111,6 @@ public class PartyManager : MonoBehaviour
         }
 
         EquipmentInventory equipmentInventory = character.CharacterInventoryObject.inventory;
-
         equipmentInventory.ConfigureDefaultRestrictions();
 
         int weaponSlotIndex = equipmentInventory.FindSlotIndexByEquipmentType(EquipmentType.Weapon);
@@ -149,8 +128,6 @@ public class PartyManager : MonoBehaviour
             Debug.LogWarning($"Could not equip starting weapon to {character.name}");
             return;
         }
-
-        character.RecalculateStats();
     }
 
     public bool AddCharacter(Character character)
@@ -168,13 +145,55 @@ public class PartyManager : MonoBehaviour
                 partySlots[i] = character;
                 character.position = i + 1;
 
+                RegisterCharacter(character);
+
                 Debug.Log($"{character.name} added party. Position: {character.position}");
+                OnPartyChanged?.Invoke();
                 return true;
             }
         }
 
         Debug.Log("Parti dolu.");
         return false;
+    }
+
+    private void RegisterCharacter(Character character)
+    {
+        if (character == null || character.health == null)
+            return;
+
+        character.health.OnDeath -= OnAnyCharacterDeath;
+        character.health.OnDeath += OnAnyCharacterDeath;
+    }
+
+    private void OnAnyCharacterDeath()
+    {
+        CompactParty();
+        PrintParty();
+        OnPartyChanged?.Invoke();
+    }
+
+    public void CompactParty()
+    {
+        Character[] newSlots = new Character[partySlots.Length];
+        int writeIndex = 0;
+
+        for (int i = 0; i < partySlots.Length; i++)
+        {
+            Character character = partySlots[i];
+
+            if (character == null)
+                continue;
+
+            if (character.health != null && character.health.isDead)
+                continue;
+
+            newSlots[writeIndex] = character;
+            newSlots[writeIndex].position = writeIndex + 1;
+            writeIndex++;
+        }
+
+        partySlots = newSlots;
     }
 
     public int GetPartySize()
@@ -266,10 +285,101 @@ public class PartyManager : MonoBehaviour
             partySlots[index2].position = index2 + 1;
 
         Debug.Log($"Swapped characters in positions {pos1} and {pos2}.");
+        OnPartyChanged?.Invoke();
     }
 
     public Character[] GetPartyMembers()
     {
         return partySlots;
+    }
+
+    public List<Character> GetAliveMembers()
+    {
+        List<Character> result = new List<Character>();
+
+        for (int i = 0; i < partySlots.Length; i++)
+        {
+            Character character = partySlots[i];
+
+            if (character == null || character.health == null || character.health.isDead)
+                continue;
+
+            result.Add(character);
+        }
+
+        return result;
+    }
+
+    public List<Character> GetAllMembersForLog()
+    {
+        List<Character> result = new List<Character>();
+
+        for (int i = 0; i < partySlots.Length; i++)
+        {
+            if (partySlots[i] != null)
+                result.Add(partySlots[i]);
+        }
+
+        return result;
+    }
+
+    public List<Character> GetAliveMembersInRange(int range)
+    {
+        List<Character> aliveMembers = GetAliveMembers();
+        List<Character> result = new List<Character>();
+
+        int clampedRange = Mathf.Clamp(range, 1, 99);
+
+        for (int i = 0; i < aliveMembers.Count; i++)
+        {
+            if (i >= clampedRange)
+                break;
+
+            result.Add(aliveMembers[i]);
+        }
+
+        return result;
+    }
+
+    public Character GetFrontAliveMember()
+    {
+        List<Character> aliveMembers = GetAliveMembers();
+        return aliveMembers.Count > 0 ? aliveMembers[0] : null;
+    }
+
+    public Character GetFrontAliveMemberInRange(int range)
+    {
+        List<Character> targets = GetAliveMembersInRange(range);
+        return targets.Count > 0 ? targets[0] : null;
+    }
+
+    public Character GetRandomAliveMemberInRange(int range)
+    {
+        List<Character> targets = GetAliveMembersInRange(range);
+
+        if (targets.Count == 0)
+            return null;
+
+        int randomIndex = UnityEngine.Random.Range(0, targets.Count);
+        return targets[randomIndex];
+    }
+
+    public bool AreAllDead()
+    {
+        return GetAliveMembers().Count == 0;
+    }
+
+    public void ClearParty(bool invokeEvent = true)
+    {
+        for (int i = 0; i < partySlots.Length; i++)
+        {
+            if (partySlots[i] != null && partySlots[i].health != null)
+                partySlots[i].health.OnDeath -= OnAnyCharacterDeath;
+
+            partySlots[i] = null;
+        }
+
+        if (invokeEvent)
+            OnPartyChanged?.Invoke();
     }
 }

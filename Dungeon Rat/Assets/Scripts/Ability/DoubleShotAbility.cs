@@ -26,11 +26,12 @@ public class DoubleShotAbility : AbilityBase
             return false;
 
         int damage = Mathf.RoundToInt(battleTurnManager.GetWeaponDamage(user) * damageMultiplier);
+        
+        EnemyCharacter secondTarget = battleTurnManager.GetEnemyBehind(enemyTarget);
 
         int firstDealtDamage = enemyTarget.ApplyDamage(damage);
         Debug.Log($"{user.name} {abilityName} ile {enemyTarget.EnemyName} hedefini vurdu. Toplam hasar: {firstDealtDamage}");
 
-        EnemyCharacter secondTarget = battleTurnManager.GetEnemyBehind(enemyTarget);
 
         if (secondTarget != null && !secondTarget.health.isDead)
         {

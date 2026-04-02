@@ -1,5 +1,5 @@
-using Unity.VisualScripting;
 using UnityEngine;
+using System;
 
 public class Health
 {   
@@ -7,6 +7,8 @@ public class Health
     public int currentHealth;
     public bool isInvulnerable;
     public bool isDead;
+
+    public event Action OnDeath;
 
     public void Initialize(int maxHealth)
     {
@@ -35,11 +37,15 @@ public class Health
     }
     public void TakeDamage(int damage)
     {
+        if (isDead || damage <= 0)
+            return;
+
         currentHealth -= damage;
-        if (currentHealth < 0)
+        if (currentHealth <= 0)
         {
             currentHealth = 0;
             isDead = true;
+            OnDeath?.Invoke();
         }
     }
     public void Heal(int amount)

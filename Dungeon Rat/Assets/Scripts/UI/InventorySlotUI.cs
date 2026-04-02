@@ -130,6 +130,9 @@ public class InventorySlotUI : MonoBehaviour,
 
         if (ownerRatInventoryUI != null)
             ownerRatInventoryUI.RefreshUI();
+
+        if (ownerLootInventoryUI != null)
+            ownerLootInventoryUI.RefreshUI();
     }
 
     public void OnPointerClick(PointerEventData eventData)

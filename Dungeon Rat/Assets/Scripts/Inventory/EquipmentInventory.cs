@@ -5,6 +5,8 @@ public class EquipmentInventory : InventoryBase
 {
     [SerializeField] private int slotCount = 8;
 
+    [System.NonSerialized] private EquipmentInventoryObject ownerObject;
+
     public void ConfigureEquipmentInventory()
     {
         if (slotCount < 1)
@@ -23,6 +25,7 @@ public class EquipmentInventory : InventoryBase
 
                 newSlots[i].slotID = i;
                 newSlots[i].isOverflowSlot = false;
+                newSlots[i].SetOwnerInventory(this);
             }
 
             slots = newSlots;
@@ -36,8 +39,19 @@ public class EquipmentInventory : InventoryBase
 
                 slots[i].slotID = i;
                 slots[i].isOverflowSlot = false;
+                slots[i].SetOwnerInventory(this);
             }
         }
+    }
+
+    public void BindOwnerObject(EquipmentInventoryObject equipmentInventoryObject)
+    {
+        ownerObject = equipmentInventoryObject;
+    }
+
+    public override void NotifyInventoryChanged()
+    {
+        ownerObject?.NotifyEquipmentInventoryChanged();
     }
 
     public void ConfigureDefaultRestrictions()
@@ -121,7 +135,7 @@ public class EquipmentInventory : InventoryBase
 
         return targetSlot.CanPlaceItem(itemData, false);
     }
-    //Var olan slotun uzerine yazabilir dikkat!!!
+
     public bool TrySetItemToSlot(int slotIndex, ItemData itemData, int amount = 1)
     {
         if (!IsValidIndex(slotIndex))
@@ -143,6 +157,7 @@ public class EquipmentInventory : InventoryBase
             amount = 1;
 
         slot.SetItem(itemData, amount);
+        NotifySlotChanged(slotIndex);
         return true;
     }
 
@@ -221,5 +236,4 @@ public class EquipmentInventory : InventoryBase
 
         return slots[slotIndex] == null || slots[slotIndex].IsEmpty();
     }
-
 }

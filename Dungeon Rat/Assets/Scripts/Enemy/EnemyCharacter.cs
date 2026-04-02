@@ -15,7 +15,6 @@ public class EnemyCharacter : IDamageable
 
     public string EnemyName => enemyData != null ? enemyData.enemyName : string.Empty;
     public Sprite Sprite => enemyData != null ? enemyData.enemySprite : null;
-    public int MaxHealth => health != null ? health.maxHealth : 0;
     public int Damage => enemyData != null ? enemyData.damage : 0;
     public int Range => enemyData != null ? enemyData.range : 0;
     public EnemyAbilityBase Ability => enemyData != null ? enemyData.enemyAbility : null;

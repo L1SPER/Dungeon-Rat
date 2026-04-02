@@ -27,6 +27,7 @@ public abstract class InventoryBase : ISerializationCallbackReceiver
                 slots[i] = new InventorySlot();
 
             slots[i].slotID = i;
+            slots[i].SetOwnerInventory(this);
         }
     }
 
@@ -63,5 +64,14 @@ public abstract class InventoryBase : ISerializationCallbackReceiver
             return false;
 
         return InventoryTransferUtility.MoveOrMergeOrSwap(slots[indexA], slots[indexB]);
+    }
+
+    public virtual void NotifySlotChanged(int slotIndex)
+    {
+        NotifyInventoryChanged();
+    }
+
+    public virtual void NotifyInventoryChanged()
+    {
     }
 }

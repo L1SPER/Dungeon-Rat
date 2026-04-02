@@ -6,7 +6,9 @@ public class AbilityButtonHoverUI : MonoBehaviour, IPointerEnterHandler, IPointe
     private AbilityBase ability;
     private BattleAbilityTooltipUI tooltipUI;
 
-    public void Setup(AbilityBase newAbility, BattleAbilityTooltipUI newTooltipUI)
+    public void Setup(
+        AbilityBase newAbility,
+        BattleAbilityTooltipUI newTooltipUI)
     {
         ability = newAbility;
         tooltipUI = newTooltipUI;

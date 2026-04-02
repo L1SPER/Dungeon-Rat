@@ -10,27 +10,53 @@ public class BattleRoomCanvasUI : MonoBehaviour
     [SerializeField] private BattleSlotUI[] enemySlots;
 
     private PartyManager partyManager;
-    private List<EnemyCharacter> currentEnemies = new List<EnemyCharacter>();
+    private EnemyPartyManager enemyPartyManager;
 
     public BattleSlotUI[] CharacterSlots => characterSlots;
     public BattleSlotUI[] EnemySlots => enemySlots;
-    public List<EnemyCharacter> CurrentEnemies => currentEnemies;
-
-
 
     private void Awake()
     {
         partyManager = FindFirstObjectByType<PartyManager>();
+        enemyPartyManager = FindFirstObjectByType<EnemyPartyManager>();
+    }
+
+    private void OnEnable()
+    {
+        if (partyManager == null)
+            partyManager = FindFirstObjectByType<PartyManager>();
+
+        if (enemyPartyManager == null)
+            enemyPartyManager = FindFirstObjectByType<EnemyPartyManager>();
+
+        if (partyManager != null)
+            partyManager.OnPartyChanged += RefreshPlayerParty;
+
+        if (enemyPartyManager != null)
+            enemyPartyManager.OnEnemyPartyChanged += RefreshEnemyPartyUI;
+    }
+
+    private void OnDisable()
+    {
+        if (partyManager != null)
+            partyManager.OnPartyChanged -= RefreshPlayerParty;
+
+        if (enemyPartyManager != null)
+            enemyPartyManager.OnEnemyPartyChanged -= RefreshEnemyPartyUI;
     }
 
     public void InitializeUI()
     {
+        if (enemyPartyManager == null)
+            enemyPartyManager = FindFirstObjectByType<EnemyPartyManager>();
+
+        if (enemyPartyManager != null && enemyPartyManager.IsPartyEmpty() && DungeonManager.Instance != null)
+        {
+            List<EnemyCharacter> createdEnemies = DungeonManager.Instance.CreateCurrentEnemyParty();
+            enemyPartyManager.SetEnemyParty(createdEnemies);
+        }
+
         RefreshAll();
-
-        if (currentEnemies.Count == 0 && DungeonManager.Instance != null)
-            currentEnemies = DungeonManager.Instance.CreateCurrentEnemyParty();
-
-        RefreshEnemyPartyUI();
     }
 
     public void RefreshAll()
@@ -54,10 +80,18 @@ public class BattleRoomCanvasUI : MonoBehaviour
             if (characterSlots[i] == null)
                 continue;
 
-            if (partyMembers != null && i < partyMembers.Length && partyMembers[i] != null && !partyMembers[i].health.isDead)
+            if (partyMembers != null &&
+                i < partyMembers.Length &&
+                partyMembers[i] != null &&
+                partyMembers[i].health != null &&
+                !partyMembers[i].health.isDead)
+            {
                 characterSlots[i].SetCharacter(partyMembers[i]);
+            }
             else
+            {
                 characterSlots[i].ClearSlot();
+            }
         }
     }
 
@@ -65,10 +99,22 @@ public class BattleRoomCanvasUI : MonoBehaviour
     {
         ClearEnemySlots();
 
-        for (int i = 0; i < currentEnemies.Count; i++)
+        if (enemyPartyManager == null)
         {
-            EnemyCharacter enemy = currentEnemies[i];
-            if (enemy == null || enemy.health.isDead)
+            Debug.LogWarning("EnemyPartyManager bulunamadı.");
+            return;
+        }
+
+        EnemyCharacter[] enemies = enemyPartyManager.GetPartyMembers();
+
+        if (enemies == null)
+            return;
+
+        for (int i = 0; i < enemies.Length; i++)
+        {
+            EnemyCharacter enemy = enemies[i];
+
+            if (enemy == null || enemy.health == null || enemy.health.isDead)
                 continue;
 
             int slotIndex = enemy.position - 1;
@@ -108,7 +154,7 @@ public class BattleRoomCanvasUI : MonoBehaviour
             if (enemySlots[i] == null || enemySlots[i].CurrentEnemy == null)
                 continue;
 
-            bool canSelect = validTargets.Contains(enemySlots[i].CurrentEnemy);
+            bool canSelect = validTargets != null && validTargets.Contains(enemySlots[i].CurrentEnemy);
             enemySlots[i].SetSelectable(canSelect);
         }
     }
@@ -122,7 +168,7 @@ public class BattleRoomCanvasUI : MonoBehaviour
             if (characterSlots[i] == null || characterSlots[i].CurrentCharacter == null)
                 continue;
 
-            bool canSelect = validTargets.Contains(characterSlots[i].CurrentCharacter);
+            bool canSelect = validTargets != null && validTargets.Contains(characterSlots[i].CurrentCharacter);
             characterSlots[i].SetSelectable(canSelect);
         }
     }
