@@ -58,8 +58,7 @@ public class DungeonRoomFlowController : MonoBehaviour
             if (canvasManager != null)
                 canvasManager.HideAll();
 
-            if (restRoomCanvas != null)
-                restRoomCanvas.SetActive(false);
+            // Sonuç ekranı veya town dönüşü işlemleri burada yapılacak.
 
             return;
         }
@@ -74,9 +73,6 @@ public class DungeonRoomFlowController : MonoBehaviour
 
         if (lootInventoryObject != null && lootInventoryObject.inventory != null)
             lootInventoryObject.inventory.Clear();
-
-        if (restRoomCanvas != null)
-            restRoomCanvas.SetActive(false);
 
         if (enemyPartyManager != null)
             enemyPartyManager.ClearEnemyParty();
@@ -95,15 +91,18 @@ public class DungeonRoomFlowController : MonoBehaviour
         if (lootInventoryUI != null)
             lootInventoryUI.gameObject.SetActive(false);
 
+        if (lootInventoryObject != null && lootInventoryObject.inventory != null)
+            lootInventoryObject.inventory.Clear();
+
         if (enemyPartyManager != null)
             enemyPartyManager.ClearEnemyParty();
 
         if (canvasManager != null)
-            canvasManager.HideAll();
+            canvasManager.ShowRestRoomUI();
 
-        if (restRoomCanvas != null)
-            restRoomCanvas.SetActive(true);
-        else
-            Debug.LogWarning("RestRoomCanvas referansı eksik.");
+        //if (battleTurnManager != null)
+        //    battleTurnManager.InitializeBattle();
+        //else
+        //    Debug.LogWarning("BattleTurnManager referansı eksik.");
     }
 }

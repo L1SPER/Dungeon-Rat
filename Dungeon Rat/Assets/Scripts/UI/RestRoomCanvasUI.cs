@@ -4,13 +4,20 @@ public class RestRoomCanvasUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private DungeonRoomFlowController roomFlowController;
-    [SerializeField] private PartyManager partyManager;
+    [SerializeField] private PartyPreviewUI partyPreviewUI;
+
+    private PartyManager partyManager;
 
     [Header("Rest Settings")]
-    [SerializeField] private int healAmount = 25;
+    [SerializeField] private int healAmount;
     [SerializeField] private bool healOnlyOnce = true;
 
     private bool healUsed;
+
+    private void Awake()
+    {
+        partyManager= FindFirstObjectByType<PartyManager>();
+    }
 
     private void OnEnable()
     {
@@ -24,9 +31,6 @@ public class RestRoomCanvasUI : MonoBehaviour
             Debug.Log("Bu odada heal zaten kullanıldı.");
             return;
         }
-
-        if (partyManager == null)
-            partyManager = FindFirstObjectByType<PartyManager>();
 
         if (partyManager == null)
         {
@@ -51,11 +55,12 @@ public class RestRoomCanvasUI : MonoBehaviour
 
         healUsed = true;
         partyManager.NotifyPartyChanged();
+        partyPreviewUI.RefreshSlots();
 
         Debug.Log($"Rest room heal uygulandı. Heal Amount: {healAmount}");
     }
 
-    public void OnClickContinue()
+    public void OnClickNextRoom()
     {
         if (roomFlowController == null)
         {

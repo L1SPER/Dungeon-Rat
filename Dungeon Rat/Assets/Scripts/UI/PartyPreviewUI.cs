@@ -23,7 +23,6 @@ public class PartyPreviewUI : MonoBehaviour
         SetupSlots();
         RefreshSlots();
     }
-
     private void SetupSlots()
     {
         for (int i = 0; i < characters.Length; i++)

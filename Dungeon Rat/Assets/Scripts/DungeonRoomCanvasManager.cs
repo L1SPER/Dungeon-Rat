@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class DungeonRoomCanvasManager : MonoBehaviour
@@ -7,13 +8,15 @@ public class DungeonRoomCanvasManager : MonoBehaviour
     [SerializeField] private GameObject characterPanelCanvas;
     [SerializeField] private GameObject afterRoomCanvas;
     [SerializeField] private GameObject restRoomCanvas;
-
+    [SerializeField] private GameObject partyPreviewCanvas;
 
     public void ShowBattleUI()
     {
         if (battleRoomCanvas != null) battleRoomCanvas.SetActive(true);
         if (characterPanelCanvas != null) characterPanelCanvas.SetActive(true);
         if (afterRoomCanvas != null) afterRoomCanvas.SetActive(false);
+        if (restRoomCanvas != null) restRoomCanvas.SetActive(false);
+        if(partyPreviewCanvas != null) partyPreviewCanvas.SetActive(false);
     }
 
     public void ShowAfterRoomUI()
@@ -32,6 +35,8 @@ public class DungeonRoomCanvasManager : MonoBehaviour
         if (battleRoomCanvas != null) battleRoomCanvas.SetActive(false);
         if (characterPanelCanvas != null) characterPanelCanvas.SetActive(false);
         if (afterRoomCanvas != null) afterRoomCanvas.SetActive(true);
+        if(restRoomCanvas != null) restRoomCanvas.SetActive(false);
+        if (partyPreviewCanvas != null) partyPreviewCanvas.SetActive(false);
     }
 
     public void HideAll()
@@ -39,12 +44,15 @@ public class DungeonRoomCanvasManager : MonoBehaviour
         if (battleRoomCanvas != null) battleRoomCanvas.SetActive(false);
         if (characterPanelCanvas != null) characterPanelCanvas.SetActive(false);
         if (afterRoomCanvas != null) afterRoomCanvas.SetActive(false);
+        if(restRoomCanvas != null) restRoomCanvas.SetActive(false);
+        if (partyPreviewCanvas != null) partyPreviewCanvas.SetActive(false);
     }
-    public void ShowRestRoom()
+    public void ShowRestRoomUI()
     {
-        if (battleRoomCanvas != null) battleRoomCanvas.SetActive(true);
+        if (battleRoomCanvas != null) battleRoomCanvas.SetActive(false);
         if (characterPanelCanvas != null) characterPanelCanvas.SetActive(false);
         if (afterRoomCanvas != null) afterRoomCanvas.SetActive(false);
         if (restRoomCanvas != null) restRoomCanvas.SetActive(true);
+        if (partyPreviewCanvas != null) partyPreviewCanvas.SetActive(true);
     }
 }
