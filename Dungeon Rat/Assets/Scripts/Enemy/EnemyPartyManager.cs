@@ -271,20 +271,6 @@ public class EnemyPartyManager : MonoBehaviour
         OnEnemyPartyChanged?.Invoke();
     }
 
-    public void ClearParty(bool invokeEvent = true)
-    {
-        for (int i = 0; i < enemySlots.Length; i++)
-        {
-            if (enemySlots[i] != null && enemySlots[i].health != null)
-                enemySlots[i].health.OnDeath -= OnAnyEnemyDeath;
-
-            enemySlots[i] = null;
-        }
-
-        if (invokeEvent)
-            OnEnemyPartyChanged?.Invoke();
-    }
-
     public void PrintParty()
     {
         Debug.Log("=== ENEMY PARTY ===");
@@ -298,5 +284,23 @@ public class EnemyPartyManager : MonoBehaviour
             else
                 Debug.Log($"Slot {i + 1}: {enemy.EnemyName}");
         }
+    }
+    public void ClearEnemyParty()
+    {
+        ClearParty(true);
+    }
+
+    public void ClearParty(bool invokeEvent = true)
+    {
+        for (int i = 0; i < enemySlots.Length; i++)
+        {
+            if (enemySlots[i] != null && enemySlots[i].health != null)
+                enemySlots[i].health.OnDeath -= OnAnyEnemyDeath;
+
+            enemySlots[i] = null;
+        }
+
+        if (invokeEvent)
+            OnEnemyPartyChanged?.Invoke();
     }
 }

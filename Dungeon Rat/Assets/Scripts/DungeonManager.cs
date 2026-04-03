@@ -27,7 +27,9 @@ public class DungeonManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     public void StartDungeon()
@@ -93,6 +95,23 @@ public class DungeonManager : MonoBehaviour
     {
         progression.ResetProgress();
         currentRun = null;
+    }
+
+    public DungeonRoomData GetCurrentRoomData()
+    {
+        if (currentRun == null)
+            return null;
+
+        return currentRun.GetCurrentRoomData();
+    }
+
+    public bool IsCurrentRoomRestRoom()
+    {
+        if (currentRun == null)
+            return false;
+
+        DungeonRoomData roomData = currentRun.GetCurrentRoomData();
+        return roomData != null && roomData.isRestRoom;
     }
 
     public List<EnemyCharacter> CreateCurrentEnemyParty()

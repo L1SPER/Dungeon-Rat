@@ -11,7 +11,16 @@ public class LootInventoryUI : MonoBehaviour
 
     private InventorySlotUI[] slotUIArray;
 
-    private void Start()
+    public void OpenAndRefresh()
+    {
+        gameObject.SetActive(true);
+
+        if (slotUIArray == null || slotUIArray.Length == 0)
+            CreateSlots();
+
+        RefreshUI();
+    }
+    public void CreateSlots()
     {
         if (lootInventoryObject == null)
         {
@@ -31,12 +40,6 @@ public class LootInventoryUI : MonoBehaviour
             return;
         }
 
-        CreateSlots();
-        RefreshUI();
-    }
-
-    private void CreateSlots()
-    {
         if (slotPrefab == null || slotsParent == null)
         {
             Debug.LogError("slotPrefab or slotsParent is missing.");

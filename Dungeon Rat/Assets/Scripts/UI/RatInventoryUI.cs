@@ -8,11 +8,6 @@ public class RatInventoryUI : MonoBehaviour
     [Header("UI")]
     [SerializeField] private InventorySlotUI slotPrefab;
     [SerializeField] private Transform slotsParent;
-    [SerializeField] private GameObject battleRoomPanel;
-    [SerializeField] private GameObject characterPanel;
-
-    [SerializeField] private GameObject afterBattleRoomPanelafterBattleRoomPanel;
-
 
     private InventorySlotUI[] slotUIArray;
 
@@ -38,9 +33,6 @@ public class RatInventoryUI : MonoBehaviour
 
         CreateSlots();
         RefreshUI();
-
-        if (afterBattleRoomPanelafterBattleRoomPanel != null)
-            afterBattleRoomPanelafterBattleRoomPanel.SetActive(false);
     }
 
     private void CreateSlots()
@@ -75,37 +67,5 @@ public class RatInventoryUI : MonoBehaviour
         {
             slotUIArray[i].Bind(ratInventoryObject.inventory, i, null, null, this);
         }
-    }
-
-    public void OpenPanel()
-    {
-        battleRoomPanel.SetActive(false);
-        characterPanel.SetActive(false);
-
-        if (afterBattleRoomPanelafterBattleRoomPanel != null)
-            afterBattleRoomPanelafterBattleRoomPanel.SetActive(true);
-
-        RefreshUI();
-    }
-
-    public void ClosePanel()
-    {
-        battleRoomPanel.SetActive(true);
-        characterPanel.SetActive(true);
-
-        if (afterBattleRoomPanelafterBattleRoomPanel != null)
-            afterBattleRoomPanelafterBattleRoomPanel.SetActive(false);
-    }
-
-    public void TogglePanel()
-    {
-        if (afterBattleRoomPanelafterBattleRoomPanel == null)
-            return;
-
-        bool isOpen = !afterBattleRoomPanelafterBattleRoomPanel.activeSelf;
-        afterBattleRoomPanelafterBattleRoomPanel.SetActive(isOpen);
-
-        if (isOpen)
-            RefreshUI();
     }
 }

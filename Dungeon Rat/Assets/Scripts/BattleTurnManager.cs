@@ -32,6 +32,11 @@ public class BattleTurnManager : MonoBehaviour
     [SerializeField] private CharacterPanelBattleUI characterPanelUI;
     [SerializeField] private DungeonRoomCanvasManager canvasManager;
 
+    [SerializeField] private LootInventoryObject lootInventoryObject;
+    [SerializeField] private LootInventoryUI lootInventoryUI;
+    [SerializeField] private ItemDatabaseObject itemDatabase;
+    [SerializeField] private int rewardItemCount = 5;
+
     [Header("Settings")]
     [SerializeField] private float enemyTurnDelay = 1f;
 
@@ -76,9 +81,6 @@ public class BattleTurnManager : MonoBehaviour
         yield return null;
 
         if (battleRoomCanvasUI != null)
-            battleRoomCanvasUI.InitializeUI();
-
-        if (battleRoomCanvasUI != null)
         {
             for (int i = 0; i < battleRoomCanvasUI.EnemySlots.Length; i++)
             {
@@ -95,12 +97,19 @@ public class BattleTurnManager : MonoBehaviour
 
         if (characterPanelUI != null)
             characterPanelUI.Initialize(this);
-
-        InitializeBattle();
     }
 
     public void InitializeBattle()
     {
+        if (enemyPartyManager == null)
+            enemyPartyManager = FindFirstObjectByType<EnemyPartyManager>();
+
+        if (battleRoomCanvasUI == null)
+            battleRoomCanvasUI = FindFirstObjectByType<BattleRoomCanvasUI>();
+
+        if (enemyPartyManager != null)
+            enemyPartyManager.ClearEnemyParty();
+
         battleEnded = false;
         isSelectingTarget = false;
         pendingAbility = null;
@@ -121,18 +130,44 @@ public class BattleTurnManager : MonoBehaviour
             return;
         }
 
-        RebuildCharacterStates(null);
+        BuildFreshCharacterStates();
 
         if (canvasManager != null)
             canvasManager.ShowBattleUI();
 
         if (battleRoomCanvasUI != null)
-            battleRoomCanvasUI.RefreshAll();
+            battleRoomCanvasUI.InitializeUI();
 
         RefreshCharacterPanelUI();
         StartPlayerPhase();
     }
+    private void BuildFreshCharacterStates()
+    {
+        if (partyManager == null)
+            return;
 
+        Character[] partyMembers = partyManager.GetPartyMembers();
+        if (partyMembers == null)
+        {
+            characterStates = null;
+            currentCharacterIndex = -1;
+            return;
+        }
+
+        characterStates = new CharacterBattleState[partyMembers.Length];
+
+        for (int i = 0; i < partyMembers.Length; i++)
+        {
+            Character member = partyMembers[i];
+
+            if (member == null)
+                continue;
+
+            characterStates[i] = new CharacterBattleState(member);
+        }
+
+        currentCharacterIndex = -1;
+    }
     private void WinBattle()
     {
         if (battleEnded)
@@ -144,8 +179,45 @@ public class BattleTurnManager : MonoBehaviour
 
         Debug.Log("Tüm düşmanlar öldü. Battle kazanıldı.");
 
+        GenerateBattleRewardLoot();
+
         if (canvasManager != null)
             canvasManager.ShowAfterRoomUI();
+    }
+    private void GenerateBattleRewardLoot()
+    {
+        if (lootInventoryObject == null || lootInventoryObject.inventory == null)
+        {
+            Debug.LogWarning("LootInventoryObject veya LootInventory bağlı değil.");
+            return;
+        }
+
+        if (itemDatabase == null || itemDatabase.items == null || itemDatabase.items.Length == 0)
+        {
+            Debug.LogWarning("ItemDatabase bulunamadı veya boş.");
+            return;
+        }
+
+        DungeonTier currentTier = DungeonTier.Common;
+
+        if (DungeonManager.Instance != null)
+            currentTier = DungeonManager.Instance.CurrentTier;
+
+        lootInventoryObject.inventory.GenerateDungeonLoot(itemDatabase.items, currentTier, rewardItemCount);
+
+        int generatedCount = 0;
+        InventorySlot[] slots = lootInventoryObject.GetSlots;
+
+        if (slots != null)
+        {
+            for (int i = 0; i < slots.Length; i++)
+            {
+                if (slots[i] != null && !slots[i].IsEmpty())
+                    generatedCount++;
+            }
+        }
+
+        Debug.Log($"Loot üretildi. Tier: {currentTier} | Dolu Slot Sayısı: {generatedCount}");
     }
 
     private void LoseBattle()

@@ -382,4 +382,8 @@ public class PartyManager : MonoBehaviour
         if (invokeEvent)
             OnPartyChanged?.Invoke();
     }
+    public void NotifyPartyChanged()
+    {
+        OnPartyChanged?.Invoke();
+    }
 }
