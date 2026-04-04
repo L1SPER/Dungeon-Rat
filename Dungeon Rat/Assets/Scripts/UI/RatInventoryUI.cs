@@ -33,7 +33,20 @@ public class RatInventoryUI : MonoBehaviour
             return;
         }
 
-        CreateSlots();
+        if (slotUIArray == null || slotUIArray.Length == 0)
+            CreateSlots();
+
+        RefreshUI();
+    }
+
+    private void OnEnable()
+    {
+        if (ratInventoryObject == null || ratInventoryObject.inventory == null)
+            return;
+
+        if (slotUIArray == null || slotUIArray.Length == 0)
+            CreateSlots();
+
         RefreshUI();
     }
 

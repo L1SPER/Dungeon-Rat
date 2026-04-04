@@ -18,4 +18,11 @@ public class LootInventoryObject : ScriptableObject
 
         inventory.SyncSlotsWithCapacity();
     }
+    [ContextMenu("CLEAR")]
+    private void Clear()
+    {
+        if (inventory == null)
+            return;
+        inventory.Clear();
+    }
 }

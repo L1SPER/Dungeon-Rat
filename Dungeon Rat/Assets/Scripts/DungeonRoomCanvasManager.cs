@@ -37,6 +37,10 @@ public class DungeonRoomCanvasManager : MonoBehaviour
         if (afterRoomCanvas != null) afterRoomCanvas.SetActive(true);
         if(restRoomCanvas != null) restRoomCanvas.SetActive(false);
         if (partyPreviewCanvas != null) partyPreviewCanvas.SetActive(false);
+
+        AfterRoomCanvasUI afterUI = afterRoomCanvas.GetComponent<AfterRoomCanvasUI>();
+        if (afterUI != null)
+            afterUI.RefreshUI();
     }
 
     public void HideAll()

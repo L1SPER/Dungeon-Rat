@@ -45,6 +45,7 @@ public abstract class ContainerInventoryBase : InventoryBase
 
                 newSlots[i].slotID = i;
                 newSlots[i].isOverflowSlot = useOverflowSlots && i >= currentCapacity;
+                newSlots[i].SetOwnerInventory(this);
             }
 
             slots = newSlots;
@@ -58,6 +59,7 @@ public abstract class ContainerInventoryBase : InventoryBase
 
                 slots[i].slotID = i;
                 slots[i].isOverflowSlot = useOverflowSlots && i >= currentCapacity;
+                slots[i].SetOwnerInventory(this);
             }
         }
     }

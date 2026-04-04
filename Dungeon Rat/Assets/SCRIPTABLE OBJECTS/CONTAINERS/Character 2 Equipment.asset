@@ -25,44 +25,44 @@ MonoBehaviour:
       isOverflowSlot: 0
       allowedEquipmentType: 1
     - item:
-        itemData: {fileID: 0}
-        amount: 0
+        itemData: {fileID: 11400000, guid: 3e09ca7258949ed46a1e8190b06ba869, type: 2}
+        amount: 1
       slotID: 1
+      isOverflowSlot: 0
+      allowedEquipmentType: 6
+    - item:
+        itemData: {fileID: 11400000, guid: a9af3a3e0f043834c945dded4e5b137a, type: 2}
+        amount: 1
+      slotID: 2
       isOverflowSlot: 0
       allowedEquipmentType: 2
     - item:
         itemData: {fileID: 0}
         amount: 0
-      slotID: 2
+      slotID: 3
       isOverflowSlot: 0
       allowedEquipmentType: 3
     - item:
         itemData: {fileID: 0}
         amount: 0
-      slotID: 3
+      slotID: 4
       isOverflowSlot: 0
       allowedEquipmentType: 4
     - item:
         itemData: {fileID: 0}
         amount: 0
-      slotID: 4
-      isOverflowSlot: 0
-      allowedEquipmentType: 5
-    - item:
-        itemData: {fileID: 0}
-        amount: 0
       slotID: 5
-      isOverflowSlot: 0
-      allowedEquipmentType: 6
-    - item:
-        itemData: {fileID: 0}
-        amount: 0
-      slotID: 6
       isOverflowSlot: 0
       allowedEquipmentType: 7
     - item:
         itemData: {fileID: 0}
         amount: 0
+      slotID: 6
+      isOverflowSlot: 0
+      allowedEquipmentType: 5
+    - item:
+        itemData: {fileID: 11400000, guid: ab5c701054496fa4fbdaa5f789309e23, type: 2}
+        amount: 1
       slotID: 7
       isOverflowSlot: 0
       allowedEquipmentType: 8

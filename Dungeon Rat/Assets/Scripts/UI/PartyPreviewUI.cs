@@ -58,6 +58,8 @@ public class PartyPreviewUI : MonoBehaviour
         for (int i = 0; i < party.Length; i++)
         {
             characters[i].transform.GetChild(0).GetComponent<CharacterSlotUI>().SetCharacter(party[i]);
+            characters[i].transform.GetChild(1).GetComponent<CharacterStatsUI>().SetStats(party[i]);
+            characters[i].transform.GetChild(2).GetComponent<EquipmentInventoryUI>().SetInventory(party[i]?.CharacterInventoryObject);
             characters[i].transform.GetChild(0).GetComponent<CharacterSlotUI>().SetSelected(i + 1 == selectedSlotIndex);
         }
     }

@@ -29,40 +29,40 @@ MonoBehaviour:
         amount: 0
       slotID: 1
       isOverflowSlot: 0
-      allowedEquipmentType: 2
+      allowedEquipmentType: 6
     - item:
         itemData: {fileID: 0}
         amount: 0
       slotID: 2
       isOverflowSlot: 0
-      allowedEquipmentType: 3
+      allowedEquipmentType: 2
     - item:
         itemData: {fileID: 0}
         amount: 0
       slotID: 3
       isOverflowSlot: 0
-      allowedEquipmentType: 4
+      allowedEquipmentType: 3
     - item:
         itemData: {fileID: 0}
         amount: 0
       slotID: 4
       isOverflowSlot: 0
-      allowedEquipmentType: 5
+      allowedEquipmentType: 4
     - item:
         itemData: {fileID: 0}
         amount: 0
       slotID: 5
       isOverflowSlot: 0
-      allowedEquipmentType: 6
+      allowedEquipmentType: 7
     - item:
         itemData: {fileID: 0}
         amount: 0
       slotID: 6
       isOverflowSlot: 0
-      allowedEquipmentType: 7
+      allowedEquipmentType: 5
     - item:
-        itemData: {fileID: 0}
-        amount: 0
+        itemData: {fileID: 11400000, guid: b0432e6cd44d22342bbf14c4cefe33f3, type: 2}
+        amount: 1
       slotID: 7
       isOverflowSlot: 0
       allowedEquipmentType: 8

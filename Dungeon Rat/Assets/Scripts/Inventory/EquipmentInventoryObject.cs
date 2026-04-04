@@ -46,4 +46,11 @@ public class EquipmentInventoryObject : ScriptableObject
         inventory.BindOwnerObject(this);
         inventory.ConfigureDefaultRestrictions();
     }
+    [ContextMenu("CLEAR")]
+    private void Clear()
+    {
+        if (inventory == null)
+            return;
+        inventory.Clear();
+    }
 }

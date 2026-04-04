@@ -162,7 +162,13 @@ public class InventorySlotUI : MonoBehaviour,
         if (currentSlot == null || currentSlot.IsEmpty())
             return;
 
-        InventoryDragManager.Instance.BeginDrag(this);
+        if (DragManager.Instance == null)
+        {
+            Debug.LogWarning("[InventorySlotUI] Sahnede DragManager bulunamadı.");
+            return;
+        }
+
+        DragManager.Instance.BeginDrag(this);
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -171,15 +177,15 @@ public class InventorySlotUI : MonoBehaviour,
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (InventoryDragManager.Instance != null && InventoryDragManager.Instance.IsDragging)
+        if (DragManager.Instance != null && DragManager.Instance.IsDragging)
         {
-            InventoryDragManager.Instance.CompleteDrag();
+            DragManager.Instance.CompleteDrag();
         }
     }
 
     public void OnDrop(PointerEventData eventData)
     {
-        InventoryDragManager dragManager = InventoryDragManager.Instance;
+        DragManager dragManager = DragManager.Instance;
 
         if (dragManager == null || !dragManager.IsDragging)
             return;

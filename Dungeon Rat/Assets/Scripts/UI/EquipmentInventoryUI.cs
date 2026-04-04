@@ -52,4 +52,9 @@ public class EquipmentInventoryUI : MonoBehaviour
             slotUIs[i].Bind(equipmentInventoryObject.inventory, i, null, this);
         }
     }
+    public void SetInventory(EquipmentInventoryObject inventoryObject)
+    {
+        equipmentInventoryObject = inventoryObject;
+        RefreshUI();
+    }
 }

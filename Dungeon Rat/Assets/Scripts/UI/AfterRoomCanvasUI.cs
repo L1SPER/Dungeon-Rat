@@ -4,6 +4,13 @@ public class AfterRoomCanvasUI : MonoBehaviour
 {
     [SerializeField] private LootInventoryUI lootInventoryUI;
     [SerializeField] private DungeonRoomFlowController roomFlowController;
+    [SerializeField] private RatInventoryUI ratInventoryUI;
+
+    public void RefreshUI()
+    {
+        ratInventoryUI?.RefreshUI();
+        lootInventoryUI?.RefreshUI();
+    }
 
     public void OpenChestLoot()
     {

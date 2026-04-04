@@ -18,4 +18,11 @@ public class RatInventoryObject : ScriptableObject
 
         inventory.ConfigureByLevel(Mathf.Max(1, inventory.Level));
     }
+    [ContextMenu("CLEAR")]
+    private void Clear()
+    {
+        if (inventory == null)
+            return;
+        inventory.Clear();
+    }
 }
