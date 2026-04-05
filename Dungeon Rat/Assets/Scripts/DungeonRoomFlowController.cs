@@ -58,8 +58,6 @@ public class DungeonRoomFlowController : MonoBehaviour
             if (canvasManager != null)
                 canvasManager.HideAll();
 
-            // Sonuç ekranı veya town dönüşü işlemleri burada yapılacak.
-
             return;
         }
 

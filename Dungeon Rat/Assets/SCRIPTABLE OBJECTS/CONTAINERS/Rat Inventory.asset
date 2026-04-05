@@ -19,62 +19,62 @@ MonoBehaviour:
   inventory:
     slots:
     - item:
-        itemData: {fileID: 11400000, guid: 6fb85f186c9e6c649a9302a569a197b3, type: 2}
-        amount: 1
+        itemData: {fileID: 0}
+        amount: 0
       slotID: 0
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 11400000, guid: 5571f3cac97513c4d90b1a547725d3de, type: 2}
-        amount: 1
+        itemData: {fileID: 0}
+        amount: 0
       slotID: 1
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 11400000, guid: a9af3a3e0f043834c945dded4e5b137a, type: 2}
-        amount: 1
+        itemData: {fileID: 0}
+        amount: 0
       slotID: 2
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 11400000, guid: a9af3a3e0f043834c945dded4e5b137a, type: 2}
-        amount: 1
+        itemData: {fileID: 0}
+        amount: 0
       slotID: 3
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 11400000, guid: e568c741c67d1c74e9879e4958d8694d, type: 2}
-        amount: 1
+        itemData: {fileID: 0}
+        amount: 0
       slotID: 4
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 11400000, guid: 829aa72012e96314987161daae30cbbc, type: 2}
-        amount: 1
+        itemData: {fileID: 0}
+        amount: 0
       slotID: 5
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 11400000, guid: ba192d73323db2f469e4c23f868f90b1, type: 2}
-        amount: 1
+        itemData: {fileID: 0}
+        amount: 0
       slotID: 6
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 11400000, guid: b0432e6cd44d22342bbf14c4cefe33f3, type: 2}
-        amount: 1
+        itemData: {fileID: 0}
+        amount: 0
       slotID: 7
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 11400000, guid: 211dbbc72138f394b8378d083f7b801a, type: 2}
-        amount: 1
+        itemData: {fileID: 0}
+        amount: 0
       slotID: 8
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 11400000, guid: 4df59da80e48ec640a919d2b68de8921, type: 2}
-        amount: 1
+        itemData: {fileID: 0}
+        amount: 0
       slotID: 9
       isOverflowSlot: 0
       allowedEquipmentType: 0

@@ -207,6 +207,13 @@ public class InventorySlotUI : MonoBehaviour,
         InventorySlot sourceSlot = sourceSlotUI.OwnerInventory.GetSlot(sourceSlotUI.SlotIndex);
         InventorySlot targetSlot = ownerInventory.GetSlot(slotIndex);
 
+        // Elle taşıma sadece normal -> normal olsun
+        if (sourceSlot.isOverflowSlot || targetSlot.isOverflowSlot)
+        {
+            dragManager.CompleteDrag();
+            return;
+        }
+
         bool success = InventoryTransferUtility.MoveOrMergeOrSwap(sourceSlot, targetSlot);
 
         if (success)

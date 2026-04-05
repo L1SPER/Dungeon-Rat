@@ -31,13 +31,13 @@ MonoBehaviour:
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 11400000, guid: c75e72761b0f60d4bb742b3aff974855, type: 2}
+        itemData: {fileID: 11400000, guid: 91d8b2d8902fe44408ababa7b1574805, type: 2}
         amount: 1
       slotID: 2
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 11400000, guid: 91d8b2d8902fe44408ababa7b1574805, type: 2}
+        itemData: {fileID: 11400000, guid: fa0bdb2208a51074aada7f689f4fb73a, type: 2}
         amount: 1
       slotID: 3
       isOverflowSlot: 0
@@ -79,13 +79,13 @@ MonoBehaviour:
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 11400000, guid: ccf841fca11f3b246a60de0007c23957, type: 2}
+        itemData: {fileID: 11400000, guid: c75e72761b0f60d4bb742b3aff974855, type: 2}
         amount: 1
       slotID: 10
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 11400000, guid: 6c6e18cd103d2cc4cb2286fe577a6c92, type: 2}
+        itemData: {fileID: 11400000, guid: ccf841fca11f3b246a60de0007c23957, type: 2}
         amount: 1
       slotID: 11
       isOverflowSlot: 0
@@ -103,7 +103,7 @@ MonoBehaviour:
       isOverflowSlot: 0
       allowedEquipmentType: 0
     - item:
-        itemData: {fileID: 11400000, guid: fa0bdb2208a51074aada7f689f4fb73a, type: 2}
+        itemData: {fileID: 11400000, guid: 6c6e18cd103d2cc4cb2286fe577a6c92, type: 2}
         amount: 1
       slotID: 14
       isOverflowSlot: 0

@@ -13,8 +13,6 @@ public class LootInventoryUI : MonoBehaviour
 
     public void OpenAndRefresh()
     {
-        gameObject.SetActive(true);
-
         if (slotUIArray == null || slotUIArray.Length == 0)
             CreateSlots();
 

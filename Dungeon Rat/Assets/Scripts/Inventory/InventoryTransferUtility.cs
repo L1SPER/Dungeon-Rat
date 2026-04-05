@@ -63,6 +63,9 @@ public static class InventoryTransferUtility
                 if (!targetSlot.CanStackWith(movingItemData))
                     continue;
 
+                if (targetSlot.RemainingStackSpace() <= 0)
+                    continue;
+
                 return MoveOrMergeOrSwap(fromSlot, targetSlot);
             }
         }

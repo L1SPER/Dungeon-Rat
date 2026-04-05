@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: SkeletonWarriorBoss
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyName: Skeleton Warrior Boss
-  enemySprite: {fileID: 0}
+  enemySprite: {fileID: 943813814455548721, guid: 5e4645146b2e68444a6ef90bf1b3c830, type: 3}
   maxHealth: 30
-  damage: 10
+  maxShield: 10
+  damage: 15
   range: 1
   armor: 0
   enemyAbility: {fileID: 11400000, guid: f5fd5322c2671bd4395989a2ba00b52b, type: 2}

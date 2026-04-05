@@ -1,10 +1,15 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RestRoomCanvasUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private DungeonRoomFlowController roomFlowController;
     [SerializeField] private PartyPreviewUI partyPreviewUI;
+    [SerializeField] private GameObject ratInventoryGameObject;
+
+    [SerializeField] private Button campfireButton;
+    [SerializeField] private Button ratInventoryButton;
 
     private PartyManager partyManager;
 
@@ -16,15 +21,27 @@ public class RestRoomCanvasUI : MonoBehaviour
 
     private void Awake()
     {
-        partyManager= FindFirstObjectByType<PartyManager>();
+        partyManager = FindFirstObjectByType<PartyManager>();
     }
 
     private void OnEnable()
     {
         healUsed = false;
+
+        if (campfireButton != null)
+            campfireButton.interactable = true;
+        if (ratInventoryButton != null)
+            ratInventoryButton.interactable = true;
     }
 
-    public void OnClickHeal()
+    public void OnRatInventoryButtonClicked()
+    {
+        ratInventoryGameObject.SetActive(true);
+        if(ratInventoryButton != null)
+            ratInventoryButton.interactable = false;
+    }    
+
+    public void OnCampfireButtonClicked()
     {
         if (healOnlyOnce && healUsed)
         {
@@ -54,6 +71,10 @@ public class RestRoomCanvasUI : MonoBehaviour
         }
 
         healUsed = true;
+
+        if (campfireButton != null)
+            campfireButton.interactable = false;
+
         partyManager.NotifyPartyChanged();
         partyPreviewUI.RefreshSlots();
 

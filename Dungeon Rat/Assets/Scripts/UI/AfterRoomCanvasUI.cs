@@ -9,7 +9,6 @@ public class AfterRoomCanvasUI : MonoBehaviour
     public void RefreshUI()
     {
         ratInventoryUI?.RefreshUI();
-        lootInventoryUI?.RefreshUI();
     }
 
     public void OpenChestLoot()

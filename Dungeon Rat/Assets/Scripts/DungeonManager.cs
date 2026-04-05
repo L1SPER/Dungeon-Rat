@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DungeonManager : MonoBehaviour
 {
@@ -150,12 +151,13 @@ public class DungeonManager : MonoBehaviour
         }
     }
 
-    private void EndDungeon()
+    public void EndDungeon()
     {
         if (currentRun == null)
             return;
 
         progression.OnDungeonCompleted(currentRun.anyCharacterDied);
+        GameSceneManager.Instance.LoadScene("AfterDungeon");
 
         Debug.Log(
             $"Dungeon Ended | Death Occurred: {currentRun.anyCharacterDied} | New Tier: {progression.CurrentTier} | Rooms: {progression.CurrentRoomCount} | Streak: {progression.FlawlessClearStreak}"
