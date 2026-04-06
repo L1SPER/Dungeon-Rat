@@ -17,6 +17,11 @@ public class CharacterStatsUI : MonoBehaviour
     [SerializeField] private TMP_Text critDamageText;
     public void SetStats(Character character)
     {
+        if (character == null)
+        {
+            SetEmptyStats();
+            return;
+        }
         healthText.text = character.finalStats.health.ToString();
         armorText.text = character.finalStats.armor.ToString();
         shieldText.text = character.finalStats.shield.ToString();

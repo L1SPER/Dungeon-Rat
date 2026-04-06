@@ -6,6 +6,8 @@ public class DungeonEntranceUI : MonoBehaviour
     [SerializeField] private GameObject partyPreviewPanel;
     [SerializeField] private GameObject dungeonEntrancePanel;
     [SerializeField] private PartyPreviewUI partyPreviewUI;
+    [SerializeField] private InventoryUI inventoryUI;
+
     private void Start()
     {
         dungeonEntrancePanel.SetActive(true);
@@ -28,6 +30,8 @@ public class DungeonEntranceUI : MonoBehaviour
         partyPreviewPanel.SetActive(true);
 
         partyPreviewUI.RefreshSlots();
+        inventoryUI.RefreshUI();
+
     }
     public void ClosePartyPanel()
     {

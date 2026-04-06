@@ -11,6 +11,16 @@ public class InventoryUI : MonoBehaviour
 
     private InventorySlotUI[] slotUIArray;
 
+    private void OnEnable()
+    {
+        if (inventoryObject == null || inventoryObject.inventory == null)
+            return;
+
+        if (slotUIArray == null || slotUIArray.Length == 0)
+            CreateSlots();
+
+        RefreshUI();
+    }
     private void Start()
     {
         if (inventoryObject == null)
@@ -31,7 +41,9 @@ public class InventoryUI : MonoBehaviour
             return;
         }
 
-        CreateSlots();
+        if (slotUIArray == null || slotUIArray.Length == 0)
+            CreateSlots();
+
         RefreshUI();
     }
 

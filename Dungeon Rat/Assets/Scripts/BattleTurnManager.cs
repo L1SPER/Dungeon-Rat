@@ -203,7 +203,8 @@ public class BattleTurnManager : MonoBehaviour
         if (DungeonManager.Instance != null)
             currentTier = DungeonManager.Instance.CurrentTier;
 
-        lootInventoryObject.inventory.GenerateDungeonLoot(itemDatabase.items, currentTier, rewardItemCount);
+        int rewardCount = GetRandomRewardItemCountByTier(currentTier);
+        lootInventoryObject.inventory.GenerateDungeonLoot(itemDatabase.items, currentTier, rewardCount);
 
         int generatedCount = 0;
         InventorySlot[] slots = lootInventoryObject.GetSlots;
@@ -230,7 +231,14 @@ public class BattleTurnManager : MonoBehaviour
         StopAllCoroutines();
 
         Debug.Log("Tüm oyuncular öldü. Battle kaybedildi.");
-        RefreshCharacterPanelUI();
+        //RefreshCharacterPanelUI();
+
+        if (DungeonManager.Instance != null && DungeonManager.Instance.HasActiveRun)
+        {
+            DungeonManager.Instance.MarkCharacterDeath();
+            DungeonManager.Instance.EndDungeon();
+        }
+
     }
 
     private void HandlePartyChanged()
@@ -1160,6 +1168,25 @@ public class BattleTurnManager : MonoBehaviour
             Debug.Log(
                 $"<color=red>[{i}] {enemy.EnemyName} | HP: {currentHp}/{maxHp} | Shield: {currentShield}/{maxShield} | Dead: {isDead}</color>"
             );
+        }
+    }
+
+    private int GetRandomRewardItemCountByTier(DungeonTier tier)
+    {
+        switch (tier)
+        {
+            case DungeonTier.Common:
+                return Random.Range(1, 3); // 1-2
+            case DungeonTier.Uncommon:
+                return Random.Range(1, 4); // 1-3
+            case DungeonTier.Rare:
+                return Random.Range(2, 4); // 2-3
+            case DungeonTier.Epic:
+                return Random.Range(2, 5); // 2-4
+            case DungeonTier.Legendary:
+                return Random.Range(3, 6); // 3-5
+            default:
+                return Random.Range(1, 3); // 1-2
         }
     }
 }
