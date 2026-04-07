@@ -3,6 +3,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class DungeonRun
 {
+    public string dungeonId;
     public DungeonTier tier;
     public int totalRooms;
     public int currentRoomIndex;
@@ -11,8 +12,9 @@ public class DungeonRun
 
     public List<DungeonRoomData> rooms = new List<DungeonRoomData>();
 
-    public DungeonRun(DungeonTier tier)
+    public DungeonRun(string dungeonId, DungeonTier tier)
     {
+        this.dungeonId = string.IsNullOrWhiteSpace(dungeonId) ? "CommonDungeon" : dungeonId;
         this.tier = tier;
         totalRooms = DungeonRules.GetRoomCount(tier);
         currentRoomIndex = 0;

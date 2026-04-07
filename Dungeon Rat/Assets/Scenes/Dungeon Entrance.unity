@@ -772,6 +772,7 @@ MonoBehaviour:
   partyPreviewPanel: {fileID: 495384556}
   dungeonEntrancePanel: {fileID: 490183294}
   partyPreviewUI: {fileID: 439203072}
+  inventoryUI: {fileID: 6949261193690661731}
 --- !u!1 &495384556
 GameObject:
   m_ObjectHideFlags: 0
@@ -3372,6 +3373,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8e70f4686ddf1945bab7fc604416b57, type: 3}
+--- !u!114 &6949261193690661731 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8185673746684294278, guid: a8e70f4686ddf1945bab7fc604416b57, type: 3}
+  m_PrefabInstance: {fileID: 6949261193690661730}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b57698c2b5e9eb4eb0b46c6548a3a5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryUI
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

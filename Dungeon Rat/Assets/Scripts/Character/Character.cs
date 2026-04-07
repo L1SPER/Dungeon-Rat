@@ -230,6 +230,11 @@ public class Character : IDamageable
         health.Heal(amount);
     }
 
+    public void ResetAbilityCooldowns()
+    {
+        abilityCooldowns.Clear();
+    }
+
     public void RestoreShield(int amount)
     {
         if (shield == null)
@@ -387,5 +392,14 @@ public class Character : IDamageable
             AbilityBase ability = keys[i];
             abilityCooldowns[ability] = Mathf.Max(0, abilityCooldowns[ability] - 1);
         }
+    }
+
+    public void ClearEquipmentInventoryOnDeath()
+    {
+        if (characterInventoryObject == null || characterInventoryObject.inventory == null)
+            return;
+
+        characterInventoryObject.inventory.Clear();
+        RefreshEquipmentBonusStatsFromInventory();
     }
 }

@@ -13,12 +13,15 @@ public class AfterDungeonCanvasUI : MonoBehaviour
     void Start()
     {
         RefreshUI();
+        SaveSystemManager.Instance?.SaveGame();
     }
+
     public void RefreshUI()
     {
         ratInventoryUI?.RefreshUI();
         generalInventoryUI.RefreshUI();
     }
+
     public void TransferLootToGeneralInventory()
     {
         RatInventory ratInventory = ratInventoryObject.inventory;
@@ -69,8 +72,10 @@ public class AfterDungeonCanvasUI : MonoBehaviour
 
         RefreshUI();
     }
+
     public void OnClickExitDungeon()
     {
+        SaveSystemManager.Instance?.SaveGame();
         GameSceneManager.Instance.LoadScene("Dungeon Entrance");
     }
 }

@@ -168,9 +168,26 @@ public class PartyManager : MonoBehaviour
 
     private void OnAnyCharacterDeath()
     {
+        ClearDeadCharactersInventories();
         CompactParty();
         PrintParty();
         OnPartyChanged?.Invoke();
+    }
+
+    private void ClearDeadCharactersInventories()
+    {
+        for (int i = 0; i < partySlots.Length; i++)
+        {
+            Character character = partySlots[i];
+
+            if (character == null || character.health == null)
+                continue;
+
+            if (!character.health.isDead)
+                continue;
+
+            character.ClearEquipmentInventoryOnDeath();
+        }
     }
 
     public void CompactParty()

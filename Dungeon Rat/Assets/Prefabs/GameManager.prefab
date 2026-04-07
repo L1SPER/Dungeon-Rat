@@ -45,6 +45,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93ffe8dd4333fd1429643b7d401bfbd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonManager
+  defaultDungeonId: CommonDungeon
+  progression:
+    currentTier: 0
+    flawlessClearStreak: 0
   commonLayout: {fileID: 11400000, guid: 7fba3c707bd44fd478fd7e2638cc1296, type: 2}
 --- !u!114 &6769616360762423472
 MonoBehaviour:
@@ -199,6 +203,76 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 598b2a5295ad68048a78f9209f74d8c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneManager
+--- !u!1 &3750460446063979472
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2218213927572503536}
+  - component: {fileID: 5939526601661258511}
+  - component: {fileID: 8213727558364952454}
+  m_Layer: 0
+  m_Name: GameSaveSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2218213927572503536
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3750460446063979472}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8218652917106136765}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5939526601661258511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3750460446063979472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bece4444b77246f4bbb6e6be20ce8cd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SaveSystemManager
+  inventoryRegistry: {fileID: 8213727558364952454}
+  dungeonManager: {fileID: 6828340467174525581}
+  fileName: savegame.json
+  loadOnAwake: 1
+  saveOnApplicationPause: 1
+  saveOnApplicationQuit: 1
+--- !u!114 &8213727558364952454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3750460446063979472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f910566acc878741b9828b4b32c9655, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InventorySaveRegistry
+  generalInventoryObject: {fileID: 11400000, guid: e1cd7cfe855f4c94abdeda377113fe38, type: 2}
+  ratInventoryObject: {fileID: 11400000, guid: 88241ea3387a7434db250b8d033dfde9, type: 2}
+  lootInventoryObject: {fileID: 11400000, guid: 0518e57cc436abe48a82d9a712633927, type: 2}
+  equipmentInventoryObjects:
+  - {fileID: 11400000, guid: d489cf72a3aa6754c81deb69da284be2, type: 2}
+  - {fileID: 11400000, guid: cfadb7f9bd9de1f49a3157c0c5eabcff, type: 2}
+  - {fileID: 11400000, guid: 32e106d957da6924d9a95f90a9d539a0, type: 2}
 --- !u!1 &8520956315990598197
 GameObject:
   m_ObjectHideFlags: 0
@@ -233,6 +307,7 @@ Transform:
   - {fileID: 5946298857434798343}
   - {fileID: 1618918087834556792}
   - {fileID: 6147952955672833637}
+  - {fileID: 2218213927572503536}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6539467813547472435

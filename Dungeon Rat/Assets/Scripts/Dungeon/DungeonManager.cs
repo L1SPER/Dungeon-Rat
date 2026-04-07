@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class DungeonManager : MonoBehaviour
 {
+    [SerializeField] private string defaultDungeonId = "CommonDungeon";
     [SerializeField] private DungeonProgression progression = new DungeonProgression();
     [SerializeField] private DungeonLayoutData commonLayout;
 
@@ -35,18 +35,36 @@ public class DungeonManager : MonoBehaviour
 
     public void StartDungeon()
     {
+        StartDungeon(defaultDungeonId);
+    }
+
+    public void StartDungeon(string dungeonId)
+    {
         if (HasActiveRun)
         {
             Debug.LogWarning("Zaten aktif bir dungeon run var.");
             return;
         }
 
-        currentRun = new DungeonRun(progression.CurrentTier);
+        PartyManager partyManager = FindFirstObjectByType<PartyManager>();
+        if (partyManager != null)
+        {
+            Character[] partyMembers = partyManager.GetPartyMembers();
 
-        BuildRoomsFromLayout(currentRun, commonLayout);
+            for (int i = 0; i < partyMembers.Length; i++)
+            {
+                if (partyMembers[i] == null)
+                    continue;
+
+                partyMembers[i].ResetAbilityCooldowns();
+            }
+        }
+
+        currentRun = new DungeonRun(dungeonId, progression.CurrentTier);
+        BuildRoomsFromLayout(currentRun, ResolveLayoutByDungeonId(dungeonId));
 
         Debug.Log(
-            $"Dungeon Started | Tier: {currentRun.tier} | Total Rooms: {currentRun.totalRooms} | Current Room: {currentRun.currentRoomIndex + 1}"
+            $"Dungeon Started | DungeonId: {currentRun.dungeonId} | Tier: {currentRun.tier} | Total Rooms: {currentRun.totalRooms} | Current Room: {currentRun.currentRoomIndex + 1}"
         );
 
         PrintCurrentRoomInfo();
@@ -76,6 +94,8 @@ public class DungeonManager : MonoBehaviour
 
             List<EnemyCharacter> enemyParty = CreateCurrentEnemyParty();
             PrintEnemyParty(enemyParty);
+
+            SaveSystemManager.Instance?.SaveGame();
         }
         else
         {
@@ -90,6 +110,17 @@ public class DungeonManager : MonoBehaviour
             return;
 
         currentRun.anyCharacterDied = true;
+        SaveSystemManager.Instance?.SaveGame();
+    }
+
+    public void ClearActiveRun()
+    {
+        currentRun = null;
+    }
+
+    private DungeonLayoutData ResolveLayoutByDungeonId(string dungeonId)
+    {
+        return commonLayout;
     }
 
     public void ResetDungeonProgress()
@@ -157,10 +188,12 @@ public class DungeonManager : MonoBehaviour
             return;
 
         progression.OnDungeonCompleted(currentRun.anyCharacterDied);
+        currentRun = null;
+        SaveSystemManager.Instance?.SaveGame();
         GameSceneManager.Instance.LoadScene("AfterDungeon");
 
         Debug.Log(
-            $"Dungeon Ended | Death Occurred: {currentRun.anyCharacterDied} | New Tier: {progression.CurrentTier} | Rooms: {progression.CurrentRoomCount} | Streak: {progression.FlawlessClearStreak}"
+            $"Dungeon Ended | New Tier: {progression.CurrentTier} | Rooms: {progression.CurrentRoomCount} | Streak: {progression.FlawlessClearStreak}"
         );
     }
 
@@ -172,8 +205,8 @@ public class DungeonManager : MonoBehaviour
         string roomType = currentRun.IsCurrentRoomRestRoom() ? "Rest Room" : "Battle Room";
 
         Debug.Log(
-            $"Room Entered | Room: {currentRun.currentRoomIndex + 1}/{currentRun.totalRooms} | Type: {roomType}"
-        );
+    $"Room Entered | DungeonId: {currentRun.dungeonId} | Room: {currentRun.currentRoomIndex + 1}/{currentRun.totalRooms} | Type: {roomType}"
+);
     }
 
     private void PrintEnemyParty(List<EnemyCharacter> enemyParty)
@@ -196,5 +229,65 @@ public class DungeonManager : MonoBehaviour
         }
 
         Debug.Log(sb.ToString());
+    }
+
+    public DungeonProgressionSaveData GetProgressionSaveData()
+    {
+        return new DungeonProgressionSaveData
+        {
+            currentTier = (int)progression.CurrentTier,
+            flawlessClearStreak = progression.FlawlessClearStreak
+        };
+    }
+
+    public void ApplyProgressionSaveData(DungeonProgressionSaveData saveData)
+    {
+        if (saveData == null)
+            return;
+
+        progression.SetState((DungeonTier)saveData.currentTier, saveData.flawlessClearStreak);
+    }
+
+    public DungeonRunSaveData GetCurrentRunSaveData()
+    {
+        if (currentRun == null)
+        {
+            return new DungeonRunSaveData
+            {
+                hasActiveRun = false
+            };
+        }
+
+        return new DungeonRunSaveData
+        {
+            hasActiveRun = !currentRun.isCompleted,
+            dungeonId = currentRun.dungeonId,
+            tier = (int)currentRun.tier,
+            totalRooms = currentRun.totalRooms,
+            currentRoomIndex = currentRun.currentRoomIndex,
+            anyCharacterDied = currentRun.anyCharacterDied,
+            isCompleted = currentRun.isCompleted
+        };
+    }
+
+    public void ApplyCurrentRunSaveData(DungeonRunSaveData saveData)
+    {
+        if (saveData == null || !saveData.hasActiveRun || saveData.isCompleted)
+        {
+            currentRun = null;
+            return;
+        }
+
+        currentRun = new DungeonRun(
+            string.IsNullOrWhiteSpace(saveData.dungeonId) ? defaultDungeonId : saveData.dungeonId,
+            (DungeonTier)saveData.tier
+        );
+
+        currentRun.totalRooms = Mathf.Max(1, saveData.totalRooms);
+        currentRun.currentRoomIndex = Mathf.Clamp(saveData.currentRoomIndex, 0, currentRun.totalRooms - 1);
+        currentRun.anyCharacterDied = saveData.anyCharacterDied;
+        currentRun.isCompleted = saveData.isCompleted;
+
+        BuildRoomsFromLayout(currentRun, ResolveLayoutByDungeonId(currentRun.dungeonId));
     }
 }

@@ -12,15 +12,22 @@ public class DungeonEntranceUI : MonoBehaviour
     {
         dungeonEntrancePanel.SetActive(true);
         partyPreviewPanel.SetActive(false);
+
+        SaveSystemManager.Instance?.LoadGame();
     }
+
     public void GoBackTown()
     {
+        SaveSystemManager.Instance?.SaveGame();
         GameSceneManager.Instance.LoadScene("Town");
     }
 
     public void EnterDungeon()
     {
-        DungeonManager.Instance.StartDungeon();
+        if (DungeonManager.Instance != null && !DungeonManager.Instance.HasActiveRun)
+            DungeonManager.Instance.StartDungeon();
+
+        SaveSystemManager.Instance?.SaveGame();
         GameSceneManager.Instance.LoadScene("Dungeon");
     }
 

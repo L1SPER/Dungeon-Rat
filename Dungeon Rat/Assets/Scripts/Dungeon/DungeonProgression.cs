@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[System.Serializable]
 public class DungeonProgression
 {
     [SerializeField] private DungeonTier currentTier = DungeonTier.Common;
@@ -31,5 +32,11 @@ public class DungeonProgression
     {
         currentTier = DungeonTier.Common;
         flawlessClearStreak = 0;
+    }
+
+    public void SetState(DungeonTier tier, int streak)
+    {
+        currentTier = tier;
+        flawlessClearStreak = Mathf.Max(0, streak);
     }
 }
