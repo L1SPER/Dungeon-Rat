@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Axe 2
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   itemName: Sturdy Axe
-  itemID: 1
+  itemID: 37
   description: 
   icon: {fileID: 4807586124992550770, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1

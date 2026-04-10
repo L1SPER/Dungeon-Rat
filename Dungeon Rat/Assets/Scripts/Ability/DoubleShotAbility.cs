@@ -25,17 +25,37 @@ public class DoubleShotAbility : AbilityBase
         if (user == null || enemyTarget == null || battleTurnManager == null)
             return false;
 
-        int damage = Mathf.RoundToInt(battleTurnManager.GetWeaponDamage(user) * damageMultiplier);
-        
-        EnemyCharacter secondTarget = battleTurnManager.GetEnemyBehind(enemyTarget);
+        bool isCritical;
+        int weaponDamage = battleTurnManager.GetWeaponDamage(user, out isCritical);
+
+        int damage = Mathf.RoundToInt(weaponDamage * damageMultiplier);
+
+        Color damageColor = isCritical
+        ? new Color(1f, 0.55f, 0f)
+        : Color.yellow;
+
 
         int firstDealtDamage = enemyTarget.ApplyDamage(damage);
         Debug.Log($"{user.name} {abilityName} ile {enemyTarget.EnemyName} hedefini vurdu. Toplam hasar: {firstDealtDamage}");
-
-
-        if (secondTarget != null && !secondTarget.health.isDead)
+        if (enemyTarget.SlotUI != null)
         {
-            int secondDealtDamage = secondTarget.ApplyDamage(damage);
+            FloatingCombatTextManager.Instance?.ShowDamage(
+                firstDealtDamage,
+                enemyTarget.SlotUI.DamageTextAnchor,
+                damageColor
+            );
+        }
+
+        EnemyCharacter secondTarget = battleTurnManager.GetEnemyBehind(enemyTarget);
+        int secondDealtDamage = 0;
+        if (secondTarget != null && !secondTarget.health.isDead&& secondTarget.SlotUI != null)
+        {
+            secondDealtDamage = secondTarget.ApplyDamage(damage);
+            FloatingCombatTextManager.Instance?.ShowDamage(
+                secondDealtDamage,
+                secondTarget.SlotUI.DamageTextAnchor,
+                damageColor
+            );
             Debug.Log($"{user.name} {abilityName} ile arkasındaki hedef {secondTarget.EnemyName} vurdu. Toplam hasar: {secondDealtDamage}");
         }
         return true;

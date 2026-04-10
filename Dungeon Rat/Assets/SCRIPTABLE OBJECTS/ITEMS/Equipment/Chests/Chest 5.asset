@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Chest 5
   m_EditorClassIdentifier: Assembly-CSharp::Chest
   itemName: Eternal Chest
-  itemID: 34
+  itemID: 10
   description: 
   icon: {fileID: 625480778395568090, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1

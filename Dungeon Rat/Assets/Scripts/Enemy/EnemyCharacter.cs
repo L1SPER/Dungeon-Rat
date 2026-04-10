@@ -3,6 +3,7 @@ using UnityEngine;
 [System.Serializable]
 public class EnemyCharacter : IDamageable
 {
+    public BattleSlotUI SlotUI { get; set; }
     public EnemyData enemyData;
     public int position;
 

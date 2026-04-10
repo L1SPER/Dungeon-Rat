@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Metal Parts
   m_EditorClassIdentifier: Assembly-CSharp::BasicMaterial
   itemName: Metal Parts
-  itemID: 3
+  itemID: 66
   description: 
   icon: {fileID: -1939780460594028631, guid: a70c0e501839f964ca2eb5c188289c04, type: 3}
   itemType: 3

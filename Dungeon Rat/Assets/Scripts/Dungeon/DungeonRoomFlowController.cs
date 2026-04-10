@@ -34,7 +34,7 @@ public class DungeonRoomFlowController : MonoBehaviour
             Debug.LogWarning("Current room data bulunamadı.");
             return;
         }
-
+        
         if (roomData.isRestRoom)
             EnterRestRoom();
         else

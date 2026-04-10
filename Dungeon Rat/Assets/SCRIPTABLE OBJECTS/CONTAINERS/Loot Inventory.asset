@@ -51,3 +51,40 @@ MonoBehaviour:
     currentCapacity: 5
     maxCapacity: 5
     useOverflowSlots: 0
+    tierLootTables:
+    - dungeonTier: 0
+      rarityWeights:
+      - rarity: 0
+        weight: 90
+      - rarity: 1
+        weight: 10
+    - dungeonTier: 1
+      rarityWeights:
+      - rarity: 0
+        weight: 60
+      - rarity: 1
+        weight: 30
+      - rarity: 2
+        weight: 10
+    - dungeonTier: 2
+      rarityWeights:
+      - rarity: 1
+        weight: 55
+      - rarity: 2
+        weight: 35
+      - rarity: 3
+        weight: 10
+    - dungeonTier: 3
+      rarityWeights:
+      - rarity: 2
+        weight: 55
+      - rarity: 3
+        weight: 35
+      - rarity: 4
+        weight: 10
+    - dungeonTier: 4
+      rarityWeights:
+      - rarity: 3
+        weight: 60
+      - rarity: 4
+        weight: 40

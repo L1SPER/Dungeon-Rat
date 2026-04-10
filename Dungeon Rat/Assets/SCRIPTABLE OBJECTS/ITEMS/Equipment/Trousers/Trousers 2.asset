@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Trousers 2
   m_EditorClassIdentifier: Assembly-CSharp::Trousers
   itemName: 
-  itemID: 0
+  itemID: 32
   description: 
   icon: {fileID: 7594132129598752404, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1
@@ -30,5 +30,5 @@ MonoBehaviour:
     intelligence: 0
     minDamage: 0
     maxDamage: 0
-    critChance: 0
-    critDamage: 0
+    critChance: 10
+    critDamage: 10

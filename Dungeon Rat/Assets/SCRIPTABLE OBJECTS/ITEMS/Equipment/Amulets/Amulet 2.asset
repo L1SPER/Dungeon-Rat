@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Amulet 2
   m_EditorClassIdentifier: Assembly-CSharp::Amulet
   itemName: 
-  itemID: 0
+  itemID: 2
   description: 
   icon: {fileID: -5470013036652095632, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1
@@ -22,7 +22,7 @@ MonoBehaviour:
   equipmentType: 6
   durability: 12
   bonusStats:
-    health: 0
+    health: 10
     armor: 0
     shield: 0
     strength: 0

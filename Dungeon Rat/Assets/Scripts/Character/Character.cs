@@ -4,6 +4,8 @@ using System.Collections.Generic;
 [System.Serializable]
 public class Character : IDamageable
 {
+    // UI'daki hangi slota bağlı olduğunu tutar
+    public BattleSlotUI SlotUI { get; set; }
     public string name;
     public ClassType classType;
     public int position;
@@ -134,8 +136,8 @@ public class Character : IDamageable
         finalStats.minDamage += finalStats.strength;
         finalStats.maxDamage += finalStats.strength;
 
-        finalStats.critChance += finalStats.agility;
-        finalStats.critDamage += finalStats.agility;
+        finalStats.critChance += finalStats.agility * 5; ;
+        finalStats.critDamage += finalStats.agility * 5; ;
 
         finalStats.critChance = Mathf.Clamp(finalStats.critChance, 0, 100);
     }

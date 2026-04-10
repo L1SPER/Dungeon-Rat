@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sword 3
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   itemName: "Knight\u2019s Sword"
-  itemID: 22
+  itemID: 58
   description: 
   icon: {fileID: 3495713834309950518, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1

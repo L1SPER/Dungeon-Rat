@@ -7,6 +7,7 @@ public class GameSaveData
     public List<InventorySaveData> inventories = new List<InventorySaveData>();
     public DungeonProgressionSaveData dungeonProgression = new DungeonProgressionSaveData();
     public DungeonRunSaveData activeDungeonRun = new DungeonRunSaveData();
+    public PartySaveData party = new PartySaveData();
     public string lastSceneName;
     public string savedAtUtc;
 }
@@ -49,4 +50,43 @@ public class DungeonRunSaveData
     public int currentRoomIndex;
     public bool anyCharacterDied;
     public bool isCompleted;
+}
+
+[Serializable]
+public class PartySaveData
+{
+    public bool hasReceivedStartingParty;
+    public List<CharacterSaveData> members = new List<CharacterSaveData>();
+}
+
+[Serializable]
+public class CharacterSaveData
+{
+    public string characterName;
+    public int classType;
+    public int slotIndex;
+    public int equipmentInventoryIndex;
+
+    public int currentHealth;
+    public int currentShield;
+
+    public StatsSaveData baseStats = new StatsSaveData();
+    public StatsSaveData activeCardBonusStats = new StatsSaveData();
+}
+
+[Serializable]
+public class StatsSaveData
+{
+    public int health;
+    public int armor;
+    public int shield;
+
+    public int strength;
+    public int agility;
+    public int intelligence;
+
+    public int minDamage;
+    public int maxDamage;
+    public int critChance;
+    public int critDamage;
 }

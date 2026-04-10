@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Shoe 1
   m_EditorClassIdentifier: Assembly-CSharp::Shoe
   itemName: 
-  itemID: 0
+  itemID: 26
   description: 
   icon: {fileID: 7431443166627799094, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1
@@ -27,7 +27,7 @@ MonoBehaviour:
     shield: 0
     strength: 0
     agility: 0
-    intelligence: 0
+    intelligence: 1
     minDamage: 0
     maxDamage: 0
     critChance: 0

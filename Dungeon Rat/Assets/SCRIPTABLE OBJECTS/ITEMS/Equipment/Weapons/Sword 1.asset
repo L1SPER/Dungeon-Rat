@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sword 1
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   itemName: Basic Sword
-  itemID: 0
+  itemID: 56
   description: 
   icon: {fileID: -5365385695610608141, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1

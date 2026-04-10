@@ -2,9 +2,13 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class BattleSlotUI : MonoBehaviour
 {
+    [Header("Anchors")]
+    [SerializeField] private RectTransform damageTextAnchor;
+    public RectTransform DamageTextAnchor => damageTextAnchor;
     [Header("Texts")]
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text healthText;
@@ -45,6 +49,10 @@ public class BattleSlotUI : MonoBehaviour
     {
         currentCharacter = character;
         currentEnemy = null;
+        if (currentCharacter != null)
+        {
+            currentCharacter.SlotUI = this;
+        }
 
         if (character == null || character.health == null || character.health.isDead || character.health.currentHealth <= 0)
         {
@@ -71,6 +79,11 @@ public class BattleSlotUI : MonoBehaviour
     {
         currentCharacter = null;
         currentEnemy = enemy;
+
+        if (enemy != null)
+        {
+            enemy.SlotUI = this;
+        }
 
         if (enemy == null || enemy.enemyData == null || enemy.health.isDead || enemy.health.currentHealth <= 0)
         {

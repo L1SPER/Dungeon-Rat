@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Wand 2
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   itemName: Polished Wand
-  itemID: 26
+  itemID: 62
   description: 
   icon: {fileID: -6051306012696016783, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1

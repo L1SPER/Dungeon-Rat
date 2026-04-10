@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Helmet 1
   m_EditorClassIdentifier: Assembly-CSharp::Helmet
   itemName: 
-  itemID: 0
+  itemID: 16
   description: 
   icon: {fileID: 5608727682196630789, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1
@@ -24,7 +24,7 @@ MonoBehaviour:
   bonusStats:
     health: 0
     armor: 0
-    shield: 0
+    shield: 5
     strength: 0
     agility: 0
     intelligence: 0

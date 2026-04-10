@@ -1291,23 +1291,23 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5939526601661258511, guid: c8b560b2b8a7f624b91d1694e8ab5860, type: 3}
       propertyPath: loadEnabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5939526601661258511, guid: c8b560b2b8a7f624b91d1694e8ab5860, type: 3}
       propertyPath: loadOnAwake
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5939526601661258511, guid: c8b560b2b8a7f624b91d1694e8ab5860, type: 3}
       propertyPath: saveEnabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5939526601661258511, guid: c8b560b2b8a7f624b91d1694e8ab5860, type: 3}
       propertyPath: saveOnApplicationQuit
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5939526601661258511, guid: c8b560b2b8a7f624b91d1694e8ab5860, type: 3}
       propertyPath: saveOnApplicationPause
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8218652917106136765, guid: c8b560b2b8a7f624b91d1694e8ab5860, type: 3}
       propertyPath: m_LocalPosition.x

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sword 4
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   itemName: Kingslayer
-  itemID: 23
+  itemID: 59
   description: 
   icon: {fileID: 871815484178006130, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Crossbow 4
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   itemName: Repeater Crossbow
-  itemID: 13
+  itemID: 49
   description: 
   icon: {fileID: 7929750135599643969, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1

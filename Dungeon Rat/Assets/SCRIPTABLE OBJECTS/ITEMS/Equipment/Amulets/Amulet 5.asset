@@ -13,16 +13,16 @@ MonoBehaviour:
   m_Name: Amulet 5
   m_EditorClassIdentifier: Assembly-CSharp::Amulet
   itemName: 
-  itemID: 0
+  itemID: 5
   description: 
   icon: {fileID: -5470013036652095632, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1
-  itemRarity: 0
+  itemRarity: 4
   maxStackSize: 1
   equipmentType: 6
-  durability: 16
+  durability: 18
   bonusStats:
-    health: 0
+    health: 25
     armor: 0
     shield: 0
     strength: 0

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sword 2
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   itemName: Tempered Sword
-  itemID: 21
+  itemID: 57
   description: 
   icon: {fileID: -6447425667752118579, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1

@@ -174,6 +174,7 @@ public class BattleTurnManager : MonoBehaviour
             return;
 
         battleEnded = true;
+        FloatingCombatTextManager.Instance?.ClearAllFloatingTexts();
         CancelCurrentSelection(false);
         StopAllCoroutines();
 
@@ -227,6 +228,7 @@ public class BattleTurnManager : MonoBehaviour
             return;
 
         battleEnded = true;
+        FloatingCombatTextManager.Instance?.ClearAllFloatingTexts();
         CancelCurrentSelection(false);
         StopAllCoroutines();
 
@@ -893,10 +895,45 @@ public class BattleTurnManager : MonoBehaviour
 
     public int GetWeaponDamage(Character attacker)
     {
+        bool isCritical;
+        return GetWeaponDamage(attacker, out isCritical);
+    }
+
+    public int GetWeaponDamage(Character attacker, out bool isCritical)
+    {
+        isCritical = false;
+
         if (attacker == null)
             return 0;
 
-        return Random.Range(attacker.finalStats.minDamage, attacker.finalStats.maxDamage + 1);
+        int baseDamage = Random.Range(attacker.finalStats.minDamage, attacker.finalStats.maxDamage + 1);
+        return ApplyCritical(attacker, baseDamage, out isCritical);
+    }
+
+    public int ApplyCritical(Character attacker, int damage)
+    {
+        bool isCritical;
+        return ApplyCritical(attacker, damage, out isCritical);
+    }
+
+    public int ApplyCritical(Character attacker, int damage, out bool isCritical)
+    {
+        isCritical = false;
+
+        if (attacker == null)
+            return 0;
+
+        if (damage <= 0)
+            return damage;
+
+        float critChance = Mathf.Clamp(attacker.finalStats.critChance, 0f, 100f);
+        isCritical = Random.value * 100f < critChance;
+
+        if (!isCritical)
+            return damage;
+
+        float critMultiplier = 1f + (attacker.finalStats.critDamage / 100f);
+        return Mathf.RoundToInt(damage * critMultiplier);
     }
 
     public int GetBasicAttackDamage(Character attacker, Weapon weapon, int offClassDamage)

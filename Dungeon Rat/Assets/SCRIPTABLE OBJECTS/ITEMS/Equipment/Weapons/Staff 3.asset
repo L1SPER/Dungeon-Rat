@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Staff 3
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   itemName: Arcane Staff
-  itemID: 17
+  itemID: 53
   description: 
   icon: {fileID: -6407407995499387161, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1

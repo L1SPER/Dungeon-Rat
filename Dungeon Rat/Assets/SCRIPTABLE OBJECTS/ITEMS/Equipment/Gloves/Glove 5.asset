@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Glove 5
   m_EditorClassIdentifier: Assembly-CSharp::Glove
   itemName: 
-  itemID: 0
+  itemID: 15
   description: 
   icon: {fileID: 4496002825605101114, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1
@@ -26,7 +26,7 @@ MonoBehaviour:
     armor: 0
     shield: 0
     strength: 0
-    agility: 0
+    agility: 5
     intelligence: 0
     minDamage: 0
     maxDamage: 0

@@ -189,6 +189,7 @@ public class DungeonManager : MonoBehaviour
 
         progression.OnDungeonCompleted(currentRun.anyCharacterDied);
         currentRun = null;
+        FloatingCombatTextManager.Instance?.ClearAllFloatingTexts();
         SaveSystemManager.Instance?.SaveGame();
         GameSceneManager.Instance.LoadScene("AfterDungeon");
 

@@ -75,6 +75,8 @@ public class AfterDungeonCanvasUI : MonoBehaviour
 
     public void OnClickExitDungeon()
     {
+        TransferLootToGeneralInventory();
+        FloatingCombatTextManager.Instance?.ClearAllFloatingTexts();
         SaveSystemManager.Instance?.SaveGame();
         GameSceneManager.Instance.LoadScene("Dungeon Entrance");
     }

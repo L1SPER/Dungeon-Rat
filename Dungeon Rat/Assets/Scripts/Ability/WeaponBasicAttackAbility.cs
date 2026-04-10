@@ -32,8 +32,29 @@ public class WeaponBasicAttackAbility : AbilityBase
             return false;
 
         int baseDamage = battleTurnManager.GetBasicAttackDamage(user, weapon, offClassDamage);
-        int calculatedDamage = Mathf.RoundToInt(baseDamage * damageMultiplier);
+
+        bool isCritical;
+        int critDamage = battleTurnManager.ApplyCritical(user, baseDamage, out isCritical);
+
+        int calculatedDamage = Mathf.RoundToInt(critDamage * damageMultiplier);
         int appliedDamage = enemyTarget.ApplyDamage(calculatedDamage);
+
+        if ( enemyTarget.SlotUI != null)
+        {
+            Color damageColor = isCritical
+                ? new Color(1f, 0.55f, 0f)
+                : Color.yellow;
+
+            FloatingCombatTextManager.Instance?.ShowDamage(
+                appliedDamage,
+                enemyTarget.SlotUI.DamageTextAnchor,
+                damageColor
+            );
+        }
+        else
+        {
+            Debug.LogError($"Enemy {enemyTarget.EnemyName} does not have a SlotUI assigned. Cannot display floating combat text.");
+        }
 
         BattleDebugLogger.LogPlayerAction(
             user.name,

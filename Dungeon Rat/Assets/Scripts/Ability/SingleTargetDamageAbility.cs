@@ -30,9 +30,22 @@ public class SingleTargetDamageAbility : AbilityBase
         if (user == null || enemyTarget == null || battleTurnManager == null)
             return false;
 
-        int baseDamage = battleTurnManager.GetWeaponDamage(user);
-        int calculatedDamage = Mathf.RoundToInt(baseDamage * damageMultiplier) + flatBonusDamage;
+        bool isCritical;
+        int weaponDamage = battleTurnManager.GetWeaponDamage(user, out isCritical);
+
+        int calculatedDamage = Mathf.RoundToInt(weaponDamage * damageMultiplier) + flatBonusDamage;
         int appliedDamage = enemyTarget.ApplyDamage(calculatedDamage);
+
+        if (enemyTarget.SlotUI != null)
+        {
+            Color damageColor = isCritical ? new Color(1f, 0.55f, 0f) : Color.yellow;
+
+            FloatingCombatTextManager.Instance?.ShowDamage(
+                appliedDamage,
+                enemyTarget.SlotUI.DamageTextAnchor,
+                damageColor
+            );
+        }
 
         if (armorBreakAmount > 0)
             enemyTarget.BreakArmor(armorBreakAmount);
@@ -47,7 +60,7 @@ public class SingleTargetDamageAbility : AbilityBase
             user.name,
             abilityName,
             enemyTarget.EnemyName,
-            baseDamage,
+            weaponDamage,
             damageMultiplier,
             flatBonusDamage,
             calculatedDamage,

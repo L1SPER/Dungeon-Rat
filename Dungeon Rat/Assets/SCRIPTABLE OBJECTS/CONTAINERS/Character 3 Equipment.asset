@@ -61,8 +61,8 @@ MonoBehaviour:
       isOverflowSlot: 0
       allowedEquipmentType: 5
     - item:
-        itemData: {fileID: 11400000, guid: b0432e6cd44d22342bbf14c4cefe33f3, type: 2}
-        amount: 1
+        itemData: {fileID: 0}
+        amount: 0
       slotID: 7
       isOverflowSlot: 0
       allowedEquipmentType: 8

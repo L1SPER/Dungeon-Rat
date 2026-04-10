@@ -8,12 +8,17 @@ public class DungeonEntranceUI : MonoBehaviour
     [SerializeField] private PartyPreviewUI partyPreviewUI;
     [SerializeField] private InventoryUI inventoryUI;
 
+    private PartyManager partyManager;
+
+    private void Awake()
+    {
+        partyManager = FindFirstObjectByType<PartyManager>();
+    }
+
     private void Start()
     {
         dungeonEntrancePanel.SetActive(true);
         partyPreviewPanel.SetActive(false);
-
-        SaveSystemManager.Instance?.LoadGame();
     }
 
     public void GoBackTown()
@@ -24,6 +29,15 @@ public class DungeonEntranceUI : MonoBehaviour
 
     public void EnterDungeon()
     {
+        if (partyManager == null)
+            partyManager = FindFirstObjectByType<PartyManager>();
+
+        if (partyManager == null || partyManager.GetAlivePartySize() <= 0)
+        {
+            Debug.LogWarning("Partide hiç yaşayan karakter yok. Dungeon'a girilemez.");
+            return;
+        }
+
         if (DungeonManager.Instance != null && !DungeonManager.Instance.HasActiveRun)
             DungeonManager.Instance.StartDungeon();
 
@@ -38,8 +52,8 @@ public class DungeonEntranceUI : MonoBehaviour
 
         partyPreviewUI.RefreshSlots();
         inventoryUI.RefreshUI();
-
     }
+
     public void ClosePartyPanel()
     {
         partyPreviewPanel.SetActive(false);

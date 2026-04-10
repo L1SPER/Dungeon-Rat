@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Bow 1
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   itemName: Basic Bow
-  itemID: 5
+  itemID: 41
   description: 
   icon: {fileID: 7774829997883845066, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1

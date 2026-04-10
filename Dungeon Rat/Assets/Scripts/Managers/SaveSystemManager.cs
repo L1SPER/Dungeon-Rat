@@ -11,6 +11,7 @@ public class SaveSystemManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private InventorySaveRegistry inventoryRegistry;
     [SerializeField] private DungeonManager dungeonManager;
+    [SerializeField] private PartyManager partyManager;
 
     [Header("Settings")]
     [SerializeField] private string fileName = "savegame.json";
@@ -21,6 +22,8 @@ public class SaveSystemManager : MonoBehaviour
     [SerializeField] private bool loadEnabled = true;
 
     private string SaveFilePath => Path.Combine(Application.persistentDataPath, fileName);
+
+    private GameSaveData cachedLoadedSaveData;
 
     public bool HasLoadedSave { get; private set; }
     public bool HasSaveFile => File.Exists(SaveFilePath);
@@ -61,6 +64,7 @@ public class SaveSystemManager : MonoBehaviour
             Debug.Log("SaveSystemManager: Save kapalı, kayıt alınmadı.");
             return;
         }
+
         if (inventoryRegistry == null)
         {
             Debug.LogWarning("SaveSystemManager: InventorySaveRegistry referansı eksik.");
@@ -106,11 +110,24 @@ public class SaveSystemManager : MonoBehaviour
         if (saveData == null)
             return false;
 
+        cachedLoadedSaveData = saveData;
         ApplySaveData(saveData);
         HasLoadedSave = true;
 
         Debug.Log($"Game loaded: {SaveFilePath}");
         return true;
+    }
+
+    public bool TryApplyLoadedParty()
+    {
+        if (cachedLoadedSaveData == null || cachedLoadedSaveData.party == null)
+            return false;
+
+        PartyManager resolvedPartyManager = GetPartyManager();
+        if (resolvedPartyManager == null)
+            return false;
+
+        return resolvedPartyManager.TryLoadParty(cachedLoadedSaveData.party);
     }
 
     public void DeleteSave()
@@ -120,7 +137,16 @@ public class SaveSystemManager : MonoBehaviour
 
         File.Delete(SaveFilePath);
         HasLoadedSave = false;
+        cachedLoadedSaveData = null;
         Debug.Log("Save file deleted.");
+    }
+
+    private PartyManager GetPartyManager()
+    {
+        if (partyManager == null)
+            partyManager = FindFirstObjectByType<PartyManager>();
+
+        return partyManager;
     }
 
     private GameSaveData BuildSaveData()
@@ -141,6 +167,10 @@ public class SaveSystemManager : MonoBehaviour
             saveData.dungeonProgression = dungeonManager.GetProgressionSaveData();
             saveData.activeDungeonRun = dungeonManager.GetCurrentRunSaveData();
         }
+
+        PartyManager resolvedPartyManager = GetPartyManager();
+        if (resolvedPartyManager != null)
+            saveData.party = resolvedPartyManager.CreatePartySaveData();
 
         return saveData;
     }
@@ -174,6 +204,10 @@ public class SaveSystemManager : MonoBehaviour
             dungeonManager.ApplyProgressionSaveData(saveData.dungeonProgression);
             dungeonManager.ApplyCurrentRunSaveData(saveData.activeDungeonRun);
         }
+
+        PartyManager resolvedPartyManager = GetPartyManager();
+        if (resolvedPartyManager != null && saveData.party != null)
+            resolvedPartyManager.TryLoadParty(saveData.party);
     }
 
     private InventorySaveData CreateInventorySaveData(InventoryObjectReference inventoryRef)
@@ -288,6 +322,7 @@ public class SaveSystemManager : MonoBehaviour
 
         inventoryRef.Inventory.NotifyInventoryChanged();
     }
+
     public void SetSaveEnabled(bool isEnabled)
     {
         saveEnabled = isEnabled;
@@ -308,6 +343,7 @@ public class SaveSystemManager : MonoBehaviour
     {
         SetSaveEnabled(!saveEnabled);
     }
+
     public void SetLoadEnabled(bool isEnabled)
     {
         loadEnabled = isEnabled;
@@ -328,6 +364,7 @@ public class SaveSystemManager : MonoBehaviour
     {
         SetLoadEnabled(!loadEnabled);
     }
+
     [ContextMenu("Enable Save")]
     private void ContextEnableSave()
     {
@@ -345,6 +382,7 @@ public class SaveSystemManager : MonoBehaviour
     {
         ToggleSaveEnabled();
     }
+
     [ContextMenu("Enable Load")]
     private void ContextEnableLoad()
     {
