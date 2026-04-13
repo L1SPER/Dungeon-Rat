@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chest
   itemName: Wooden Chest
   itemID: 6
+  price: 0
   description: 
   icon: {fileID: 625480778395568090, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1
   itemRarity: 0
   maxStackSize: 1
+  isCurrency: 0
   equipmentType: 2
   durability: 10
   bonusStats:

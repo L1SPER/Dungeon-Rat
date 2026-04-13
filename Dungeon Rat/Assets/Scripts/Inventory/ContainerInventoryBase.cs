@@ -73,6 +73,7 @@ public abstract class ContainerInventoryBase : InventoryBase
 
         if (itemData.IsStackable)
         {
+           
             remaining = TryAddToStacks(itemData, remaining, false);
             remaining = TryAddToEmptySlots(itemData, remaining, false);
 

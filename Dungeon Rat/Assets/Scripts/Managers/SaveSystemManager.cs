@@ -171,6 +171,9 @@ public class SaveSystemManager : MonoBehaviour
         PartyManager resolvedPartyManager = GetPartyManager();
         if (resolvedPartyManager != null)
             saveData.party = resolvedPartyManager.CreatePartySaveData();
+        
+        if (CoinManager.Instance != null)
+            saveData.coins = CoinManager.Instance.CurrentCoins;
 
         return saveData;
     }
@@ -208,6 +211,9 @@ public class SaveSystemManager : MonoBehaviour
         PartyManager resolvedPartyManager = GetPartyManager();
         if (resolvedPartyManager != null && saveData.party != null)
             resolvedPartyManager.TryLoadParty(saveData.party);
+
+        if (CoinManager.Instance != null)
+            CoinManager.Instance.SetCoins(saveData.coins);
     }
 
     private InventorySaveData CreateInventorySaveData(InventoryObjectReference inventoryRef)

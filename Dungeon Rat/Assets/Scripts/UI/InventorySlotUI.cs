@@ -137,17 +137,27 @@ public class InventorySlotUI : MonoBehaviour,
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (ownerInventory == null || currentSlot == null)
+        if (ownerInventory == null || currentSlot == null || currentSlot.IsEmpty())
             return;
 
-        bool altPressed = Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt);
+        // Sağ tık → Consumable ise context menu
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            if (currentSlot.item.itemData is ConsumableItemData consumable)
+            {
+                PartyPreviewUI partyUI = FindFirstObjectByType<PartyPreviewUI>();
+                ConsumableItemContextMenu.Instance?.Show(consumable, currentSlot, ownerInventory, slotIndex, partyUI);
+            }
+            return;
+        }
 
+        // Mevcut sol tık + Alt
+        bool altPressed = Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt);
         if (eventData.button == PointerEventData.InputButton.Left && altPressed)
         {
             if (ownerInventory is ContainerInventoryBase containerInventory)
             {
                 bool success = containerInventory.SplitSlotInHalfToFirstValidEmptySlot(slotIndex);
-
                 if (success)
                     RefreshOwnerUI();
             }

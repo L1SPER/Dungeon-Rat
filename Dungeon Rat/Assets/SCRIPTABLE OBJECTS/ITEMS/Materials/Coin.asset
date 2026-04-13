@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4358f1c4aa058734cb3354e6506240f8, type: 3}
   m_Name: Coin
   m_EditorClassIdentifier: Assembly-CSharp::Coin
-  itemName: 
-  itemID: 0
+  itemName: Coin
+  itemID: 67
+  price: 0
   description: 
   icon: {fileID: 194336859228450555, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 3
   itemRarity: 0
   maxStackSize: 1000
+  isCurrency: 1

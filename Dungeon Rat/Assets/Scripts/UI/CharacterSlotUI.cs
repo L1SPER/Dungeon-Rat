@@ -44,6 +44,7 @@ public class CharacterSlotUI : MonoBehaviour,IPointerClickHandler
     }
     public void OnPointerClick(PointerEventData eventData)
     {
+        ConsumableItemContextMenu.Instance?.Hide();
         partyPreviewUI.SelectSlot(slotIndex);
     }
     public void SetSelected(bool isSelected)

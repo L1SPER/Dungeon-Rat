@@ -72,6 +72,15 @@ public class PartyPreviewUI : MonoBehaviour
         selectedSlotIndex = -1;
         RefreshSlots();
     }
+
+    public Character GetSelectedCharacter()
+    {
+        if (selectedSlotIndex == -1)
+            return null;
+
+        return partyManager.GetCharacterBySlotIndex(selectedSlotIndex);
+    }
+
     public void SwapSlot2And3()
     {
         SwapSlotUI(2, 3);

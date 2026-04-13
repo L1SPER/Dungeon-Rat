@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   itemName: Windrunner Bow
   itemID: 44
+  price: 0
   description: 
   icon: {fileID: 7774829997883845066, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1
   itemRarity: 3
   maxStackSize: 1
+  isCurrency: 0
   equipmentType: 8
   durability: 16
   bonusStats:

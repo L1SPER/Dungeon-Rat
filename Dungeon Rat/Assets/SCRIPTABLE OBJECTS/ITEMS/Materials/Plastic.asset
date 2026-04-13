@@ -9,13 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db7be5aa72435f945a9e6d7d93cef715, type: 3}
-  m_Name: Metal Parts
-  m_EditorClassIdentifier: Assembly-CSharp::BasicMaterial
-  itemName: Metal Parts
-  itemID: 66
+  m_Script: {fileID: 11500000, guid: ca73fce10e3eded45ba7bce6a83794ae, type: 3}
+  m_Name: Plastic
+  m_EditorClassIdentifier: Assembly-CSharp::Plastic
+  itemName: Plastic
+  itemID: 70
+  price: 0
   description: 
-  icon: {fileID: -1939780460594028631, guid: a70c0e501839f964ca2eb5c188289c04, type: 3}
+  icon: {fileID: -5855690042751787076, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 3
   itemRarity: 0
   maxStackSize: 50
+  isCurrency: 0

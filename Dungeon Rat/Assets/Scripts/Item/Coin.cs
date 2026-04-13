@@ -7,5 +7,6 @@ public class Coin : MaterialItemData
     {
         base.Awake();
         this.maxStackSize = 1000;
+        this.isCurrency = true;
     }
 }

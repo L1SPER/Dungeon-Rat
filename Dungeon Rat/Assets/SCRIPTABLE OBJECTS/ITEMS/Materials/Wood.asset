@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a723e3e7038fd6e429755f7f2f91e02b, type: 3}
   m_Name: Wood
   m_EditorClassIdentifier: Assembly-CSharp::Wood
-  itemName: 
-  itemID: 0
+  itemName: Wood
+  itemID: 69
+  price: 0
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: -1610602217286185177, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 3
   itemRarity: 0
   maxStackSize: 50
+  isCurrency: 0

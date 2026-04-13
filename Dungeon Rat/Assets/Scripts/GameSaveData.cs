@@ -10,6 +10,7 @@ public class GameSaveData
     public PartySaveData party = new PartySaveData();
     public string lastSceneName;
     public string savedAtUtc;
+    public int coins;
 }
 
 [Serializable]

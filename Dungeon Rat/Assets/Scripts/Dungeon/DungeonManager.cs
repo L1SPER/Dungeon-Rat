@@ -110,7 +110,6 @@ public class DungeonManager : MonoBehaviour
             return;
 
         currentRun.anyCharacterDied = true;
-        SaveSystemManager.Instance?.SaveGame();
     }
 
     public void ClearActiveRun()

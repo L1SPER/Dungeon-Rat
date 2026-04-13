@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   itemName: Basic Sword
   itemID: 56
+  price: 0
   description: 
   icon: {fileID: -5365385695610608141, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   itemType: 1
   itemRarity: 0
   maxStackSize: 1
+  isCurrency: 0
   equipmentType: 8
   durability: 10
   bonusStats:

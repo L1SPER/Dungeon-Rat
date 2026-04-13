@@ -13,7 +13,6 @@ public class AfterDungeonCanvasUI : MonoBehaviour
     void Start()
     {
         RefreshUI();
-        SaveSystemManager.Instance?.SaveGame();
     }
 
     public void RefreshUI()

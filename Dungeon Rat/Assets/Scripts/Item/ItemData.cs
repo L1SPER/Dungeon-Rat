@@ -6,6 +6,7 @@ public abstract class ItemData : ScriptableObject
     [Header("General")]
     public string itemName;
     public int itemID;
+    public int price;
     [TextArea] public string description;
     public Sprite icon;
 
@@ -16,4 +17,6 @@ public abstract class ItemData : ScriptableObject
     [Header("Stacking")]
     public int maxStackSize;
     public bool IsStackable => maxStackSize>1;
+
+    public bool isCurrency;
 }
