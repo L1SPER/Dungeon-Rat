@@ -11014,11 +11014,6 @@ MonoBehaviour:
   shopItems:
   - {fileID: 11400000, guid: 51574e619f027b740b15cccad5fc4bc3, type: 2}
   - {fileID: 11400000, guid: 8d6af0d1671e301469eea2ae95c348a3, type: 2}
-  - {fileID: 11400000, guid: 8d6af0d1671e301469eea2ae95c348a3, type: 2}
-  - {fileID: 11400000, guid: 8d6af0d1671e301469eea2ae95c348a3, type: 2}
-  - {fileID: 11400000, guid: 8d6af0d1671e301469eea2ae95c348a3, type: 2}
-  - {fileID: 11400000, guid: 8d6af0d1671e301469eea2ae95c348a3, type: 2}
-  - {fileID: 11400000, guid: 8d6af0d1671e301469eea2ae95c348a3, type: 2}
   slotParent: {fileID: 956807324}
   shopItemPrefab: {fileID: 3566809513404569915, guid: 995f819c3730a294698981b0e2e3391e, type: 3}
   buyMenu: {fileID: 789471828}
